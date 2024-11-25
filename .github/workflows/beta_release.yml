@@ -31,7 +31,7 @@ jobs:
                     - platform: 'ubuntu-22.04' # for Tauri v1 you could replace this with ubuntu-20.04.
                       args: ''
                     - platform: 'windows-2019'
-                      args: '--bundles updater'
+                      args: '--bundles updater, msi'
                     - platform: 'macos-latest'
                       args: '--target universal-apple-darwin'
 
@@ -219,7 +219,7 @@ jobs:
               run: echo "Artifact ID from previous job is $artifactPaths"
 
             - name: Upload BETA releases
-              if: ${{ ( github.event_name == 'schedule' ) || ( ! startsWith(github.ref, 'refs/heads/release') ) }}
+              if: ${{ (steps.build.outputs.artifactPaths) && ( github.event_name == 'schedule' ) || ( ! startsWith(github.ref, 'refs/heads/release') ) }}
               uses: actions/upload-artifact@v4
               with:
                   name: tari-universe-beta_${{ steps.build.outputs.appVersion }}_${{ matrix.platform }}
