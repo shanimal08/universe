@@ -3,19 +3,16 @@ import { menu, CPU_HASH_ITEM_ID, GPU_HASH_ITEM_ID, EARNINGS_ITEM_ID } from '@app
 import { listen } from '@tauri-apps/api/event';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { formatHashrate } from '@app/utils/formatHashrate';
-import { useBalanceFormatter } from '@app/utils/formatBalance';
+import { formatHashrate, formatNumber, FormatPreset } from '@app/utils';
 
 export function useUpdateSystemTray() {
     const [metrics, setMetrics] = useState<MinerMetrics>();
 
-    const formatBalance = useBalanceFormatter();
-
     const totalEarningsFormatted = useMemo(() => {
         const cpu_est = metrics?.cpu?.mining?.estimated_earnings || 0;
         const gpu_est = metrics?.gpu?.mining?.estimated_earnings || 0;
-        return formatBalance(cpu_est + gpu_est);
-    }, [formatBalance, metrics]);
+        return formatNumber(cpu_est + gpu_est, FormatPreset.TXTM_COMPACT);
+    }, [metrics]);
 
     const updateMenuItem = useCallback(async ({ itemId, itemText }: { itemId: string; itemText: string }) => {
         const item = await menu.get(itemId);
