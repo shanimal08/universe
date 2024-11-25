@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
 import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
 import CharSpinner from '@app/components/CharSpinner/CharSpinner.tsx';
-import { useFormatBalance } from '@app/utils/formatBalance.ts';
+import { formatNumber, FormatPreset } from '@app/utils/formatters.ts';
 import { Typography } from '@app/components/elements/Typography.tsx';
 import { Stack } from '@app/components/elements/Stack.tsx';
 
@@ -40,12 +40,13 @@ export default function Wallet() {
     const recapCount = useBlockchainVisualisationStore((s) => s.recapCount);
     const setRecapCount = useBlockchainVisualisationStore((s) => s.setRecapCount);
 
-    const fetchTx = useFetchTx();
-    const formatted = useFormatBalance(balance || 0);
-    const sizing = formatted.length <= 6 ? 50 : formatted.length <= 8 ? 44 : 32;
-
     const [showBalance, setShowBalance] = useState(true);
     const [showHistory, setShowHistory] = useState(false);
+    const [showLongBalance, setShowLongBalance] = useState(false);
+
+    const fetchTx = useFetchTx();
+    const formatted = formatNumber(balance || 0, showLongBalance ? FormatPreset.TXTM_LONG : FormatPreset.TXTM_COMPACT);
+    const sizing = formatted.length <= 6 ? 50 : formatted.length <= 8 ? 44 : 32;
 
     const toggleBalanceVisibility = () => setShowBalance((prev) => !prev);
     const displayValue = balance === null ? '-' : showBalance ? formatted : '*****';
@@ -66,7 +67,10 @@ export default function Wallet() {
     };
 
     const balanceMarkup = (
-        <WalletBalanceContainer>
+        <WalletBalanceContainer
+            onMouseOver={() => setShowLongBalance(true)}
+            onMouseOut={() => setShowLongBalance(false)}
+        >
             <Stack direction="row" alignItems="center">
                 <Typography variant="span" style={{ fontSize: '15px' }}>
                     {t('wallet-balance')}

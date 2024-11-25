@@ -1,10 +1,8 @@
+import ModeSelect from '@app/containers/main/SideBar/Miner/components/ModeSelect';
 import { useTheme } from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { formatHashrate } from '@app/utils/formatHashrate.ts';
-
 import { useMiningStore } from '@app/store/useMiningStore.ts';
-import { useFormatBalance } from '@app/utils/formatBalance.ts';
 import { Typography } from '@app/components/elements/Typography.tsx';
 
 import { useAppConfigStore } from '@app/store/useAppConfigStore.ts';
@@ -19,7 +17,7 @@ import {
     ExpandableTileItem,
     ExpandedContentTile,
 } from '@app/containers/main/SideBar/Miner/components/ExpandableTile.styles.ts';
-import ModeSelect from './components/ModeSelect.tsx';
+import { formatHashrate, formatNumber, FormatPreset } from '@app/utils/formatters.ts';
 
 export default function Miner() {
     useMiningStatesSync();
@@ -49,9 +47,9 @@ export default function Miner() {
     const totalEarnings = cpu_estimated_earnings + gpu_estimated_earnings;
     const earningsLoading = totalEarnings <= 0 && (isWaitingForCPUHashRate || isWaitingForGPUHashRate);
 
-    const totalEarningsFormatted = useFormatBalance(totalEarnings);
-    const estimatedBalanceFormatted = useFormatBalance(cpu_estimated_earnings);
-    const gpuEstimatedEarnings = useFormatBalance(gpu_estimated_earnings);
+    const totalEarningsFormatted = formatNumber(totalEarnings, FormatPreset.TXTM_COMPACT);
+    const estimatedBalanceFormatted = formatNumber(cpu_estimated_earnings, FormatPreset.TXTM_COMPACT);
+    const gpuEstimatedEarnings = formatNumber(gpu_estimated_earnings, FormatPreset.TXTM_COMPACT);
 
     return (
         <MinerContainer>

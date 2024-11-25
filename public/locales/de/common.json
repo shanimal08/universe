@@ -25,5 +25,6 @@
   "usage": "Nutzung",
   "utilization": "Auslastung",
   "version": "Version",
-  "versions": "Versionen"
+  "versions": "Versionen",
+  "webgl-not-supported": "WebGL not supported. Disabled visual mode."
 }

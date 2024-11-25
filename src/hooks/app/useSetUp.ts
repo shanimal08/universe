@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/react';
 import { useCallback, useEffect, useRef } from 'react';
 import { listen } from '@tauri-apps/api/event';
 import { TauriEvent } from '../../types.ts';
@@ -67,7 +66,7 @@ export function useSetUp() {
             isInitializingRef.current = true;
             clearStorage();
             invoke('setup_application').catch((e) => {
-                Sentry.captureException(e);
+                console.error(`Failed to setup application: ${e}`);
                 setCriticalError(`Failed to setup application: ${e}`);
             });
         }
