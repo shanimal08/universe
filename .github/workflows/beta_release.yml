@@ -79,6 +79,7 @@ jobs:
                   yq eval ".productName = \"Tari Universe ${{ env.BETA_STRING }}\"" -i tauri.conf.json
                   yq eval ".mainBinaryName = \"Tari Universe ${{ env.BETA_STRING }}\"" -i tauri.conf.json
                   yq eval ".version += \"-${BETA_DATE}\"" -i tauri.conf.json
+                  yq eval ".bundle.windows.wix.version += \".${BETA_DATE}\"" -i tauri.conf.json
                   yq eval ".app.windows[0].title = \"Tari Universe ${{ env.BETA_STRING }} | Testnet\"" -i tauri.conf.json
                   yq eval ".identifier = \"com.tari.universe.beta\"" -i tauri.conf.json
                   yq eval ".plugins.updater.endpoints = [\"https://raw.githubusercontent.com/tari-project/universe/${{ env.BETA_BRANCH_NAME }}/.updater/beta-latest.json\"]" \
@@ -211,10 +212,9 @@ jobs:
 
             - name: Debug step {artifactPaths}
               continue-on-error: true
-              env:
-                  artifactPaths: ${{ steps.build.outputs.artifactPaths }}
               shell: bash
-              run: echo "Artifact ID from previous job is ${{ env.artifactPaths }}"
+              run: |
+                  echo "Artifact paths:\n ${{ join(fromJSON(steps.build.outputs.artifactPaths), '\n') }}"
 
             - name: Upload BETA releases
               if: ${{ (steps.build.outputs.artifactPaths) && ( github.event_name == 'schedule' ) || ( ! startsWith(github.ref, 'refs/heads/release') ) }}
