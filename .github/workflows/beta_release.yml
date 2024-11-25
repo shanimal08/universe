@@ -44,7 +44,6 @@ jobs:
               if: ${{ startsWith(runner.os,'Windows') }}
               run: |
                   choco upgrade yq -y
-
             - name: beta builds - Install dependencies (linux) [yq]
               if: ${{ startsWith(runner.os,'Linux') }}
               shell: bash
@@ -72,17 +71,14 @@ jobs:
                   echo "AIRDROP_API_BASE_URL=${{ env.AIRDROP_API_BASE_URL }}" >> $GITHUB_ENV
                   echo "AIRDROP_TWITTER_AUTH_URL=${{ env.AIRDROP_TWITTER_AUTH_URL }}" >> $GITHUB_ENV
                   echo "TS_FEATURES=release-ci-beta, airdrop-env" >> $GITHUB_ENV
-                  #export BETA_DATE=$(date +%Y-%m-%d)
                   # numeric-only and cannot be greater than 65535 for msi target
-                  export BETA_DATE=4$(date +%m%d)
+                  export BETA_DATE=$(date +%m%d)
                   cd "${GITHUB_WORKSPACE}/src-tauri"
                   echo "releaseName=Tari Universe ${{ env.BETA_STRING }} v__VERSION__-${BETA_DATE}" >> $GITHUB_ENV
                   # Don't mess with the double quotes and inner escaped quotes
                   yq eval ".productName = \"Tari Universe ${{ env.BETA_STRING }}\"" -i tauri.conf.json
-                  yq eval ".mainBinaryName = \"Tari Universe ${{ env.BETA_STRING }}\"" -i tauri.conf.json
                   yq eval ".version += \"-${BETA_DATE}\"" -i tauri.conf.json
-                  yq eval ".bundle.windows.wix.version = \"__VERSION__.${BETA_DATE}\"" -i tauri.conf.json
-                  yq eval ".app.windows[0].title = \"Tari Universe ${{ env.BETA_STRING }} | Testnet\"" -i tauri.conf.json
+                  yq eval ".app/windows[0].title = \"Tari Universe ${{ env.BETA_STRING }} | Testnet\"" -i tauri.conf.json
                   yq eval ".identifier = \"com.tari.universe.beta\"" -i tauri.conf.json
                   yq eval ".plugins.updater.endpoints = [\"https://raw.githubusercontent.com/tari-project/universe/${{ env.BETA_BRANCH_NAME }}/.updater/beta-latest.json\"]" \
                     -i tauri.conf.json
@@ -91,7 +87,6 @@ jobs:
                     Cargo.toml
                   cat Cargo.toml
                   sed -i.bak -e "s/\"icons\//\"beta-icons\//g" tauri.conf.json
-
             - name: Node.js setup
               uses: actions/setup-node@v4
               with:
@@ -155,19 +150,16 @@ jobs:
               run: |
                   vcpkg.exe install sqlite3:x64-windows zlib:x64-windows
                   choco upgrade protoc -y
-
             - name: Install dependencies (windows/OpenCL)
               if: startsWith(runner.os,'Windows')
               run: |
                   vcpkg.exe --triplet=x64-windows install opencl
-
             - name: Set environment variables (windows)
               if: startsWith(runner.os,'Windows')
               shell: bash
               run: |
                   echo "SQLITE3_LIB_DIR=C:\vcpkg\installed\x64-windows\lib" >> $GITHUB_ENV
                   echo "LIB=C:\vcpkg\installed\x64-windows\lib" >> $GITHUB_ENV
-
             - name: Azure code-signing setup (windows only)
               if: ${{ ( startsWith(runner.os,'Windows') ) && ( env.AZURE_TENANT_ID != '' ) }}
               shell: bash
@@ -181,7 +173,6 @@ jobs:
                       ./tauri.windows.conf.json
                   cat ./tauri.windows.conf.json
                   cargo install trusted-signing-cli@0.3.0 --locked
-
             - name: Install dependencies (node)
               run: |
                   npm --version
@@ -221,7 +212,7 @@ jobs:
               env:
                   artifactPaths: ${{ steps.build.outputs.artifactPaths }}
               shell: bash
-              run: echo "Artifact ID from previous job is $artifactPaths"
+              run: echo "Artifact ID from previous job is ${{ env.artifactPaths }}"
 
             - name: Upload BETA releases
               if: ${{ (steps.build.outputs.artifactPaths) && ( github.event_name == 'schedule' ) || ( ! startsWith(github.ref, 'refs/heads/release') ) }}
