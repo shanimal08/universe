@@ -31,7 +31,7 @@ jobs:
                     - platform: 'ubuntu-22.04' # for Tauri v1 you could replace this with ubuntu-20.04.
                       args: ''
                     - platform: 'windows-2019'
-                      args: '--bundles msi,updater'
+                      args: '--bundles updater'
                     - platform: 'macos-latest'
                       args: '--target universal-apple-darwin'
 
@@ -77,6 +77,7 @@ jobs:
                   echo "releaseName=Tari Universe ${{ env.BETA_STRING }} v__VERSION__-${BETA_DATE}" >> $GITHUB_ENV
                   # Don't mess with the double quotes and inner escaped quotes
                   yq eval ".productName = \"Tari Universe ${{ env.BETA_STRING }}\"" -i tauri.conf.json
+                  yq eval ".mainBinaryName = \"Tari Universe ${{ env.BETA_STRING }}\"" -i tauri.conf.json
                   yq eval ".version += \"-${BETA_DATE}\"" -i tauri.conf.json
                   yq eval ".app.windows[0].title = \"Tari Universe ${{ env.BETA_STRING }} | Testnet\"" -i tauri.conf.json
                   yq eval ".identifier = \"com.tari.universe.beta\"" -i tauri.conf.json
@@ -176,7 +177,7 @@ jobs:
             - name: Install dependencies (node)
               run: |
                   npm --version
-                  npm install
+                  npm ci
 
             - name: Build Tauri apps
               id: build
@@ -197,6 +198,7 @@ jobs:
                   TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
                   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
                   NODE_OPTIONS: '--max_old_space_size=4096'
+                  CACHE_ON_FAILURE: ${{ startsWith(runner.os,'Windows') }}
               with:
                   tagName: ${{ env.tagName }}
                   releaseName: ${{ env.releaseName }}
