@@ -245,7 +245,7 @@ export const TorMarkup = () => {
                     </TorSettingsContainer>
                 ) : null}
             </SettingsGroupWrapper>
-            {defaultUseTor && <TorDebug />}
+            {defaultUseTor && hasCheckedOs.current && <TorDebug isMac={isMac} />}
         </>
     );
 };

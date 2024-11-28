@@ -1,3 +1,4 @@
+import { useUIStore } from '@app/store/useUIStore';
 import { useCallback, useEffect, useRef } from 'react';
 import { listen } from '@tauri-apps/api/event';
 import { TauriEvent } from '../../types.ts';
@@ -12,7 +13,7 @@ import { useHandleAirdropTokensRefresh } from '../airdrop/stateHelpers/useAirdro
 export function useSetUp() {
     const isInitializingRef = useRef(false);
     const handleRefreshAirdropTokens = useHandleAirdropTokensRefresh();
-
+    const adminShow = useUIStore((s) => s.adminShow);
     const setSetupDetails = useAppStateStore((s) => s.setSetupDetails);
     const setCriticalError = useAppStateStore((s) => s.setCriticalError);
     const isAfterAutoUpdate = useAppStateStore((s) => s.isAfterAutoUpdate);
@@ -33,6 +34,7 @@ export function useSetUp() {
         refreshTokens();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
     const clearStorage = useCallback(() => {
         // clear all storage except airdrop data
         const airdropStorage = localStorage.getItem('airdrop-store');
@@ -47,6 +49,7 @@ export function useSetUp() {
     }, [fetchApplicationsVersionsWithRetry, setSettingUpFinished]);
 
     useEffect(() => {
+        if (adminShow === 'setup') return;
         const unlistenPromise = listen('message', ({ event: e, payload: p }: TauriEvent) => {
             switch (p.event_type) {
                 case 'setup_status':
@@ -80,6 +83,7 @@ export function useSetUp() {
         setCriticalError,
         setSeenPermissions,
         setSetupDetails,
+        adminShow,
         syncedAidropWithBackend,
     ]);
 }

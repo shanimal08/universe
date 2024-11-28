@@ -30,13 +30,13 @@
         "createUpdaterArtifacts": true,
         "windows": {
             "wix": {
-                "version": "0.7.7"
+                "version": "0.8.1"
             }
         }
     },
     "productName": "Tari Universe (Alpha)",
     "mainBinaryName": "Tari Universe (Alpha)",
-    "version": "0.7.7",
+    "version": "0.8.1",
     "identifier": "com.tari.universe.alpha",
     "plugins": {
         "updater": {

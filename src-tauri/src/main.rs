@@ -50,6 +50,7 @@ mod binaries;
 mod commands;
 mod consts;
 mod cpu_miner;
+mod credential_manager;
 mod download_utils;
 mod external_dependencies;
 mod feedback;
@@ -839,7 +840,8 @@ fn main() {
             commands::update_applications,
             commands::get_max_consumption_levels,
             commands::close_splashscreen,
-            commands::set_visual_mode
+            commands::set_visual_mode,
+            commands::get_monero_seed_words
         ])
         .build(tauri::generate_context!())
         .inspect_err(

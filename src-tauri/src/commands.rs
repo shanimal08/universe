@@ -2,6 +2,7 @@ use crate::app_config::{AppConfig, GpuThreads};
 use crate::app_in_memory_config::AirdropInMemoryConfig;
 use crate::auto_launcher::AutoLauncher;
 use crate::binaries::{Binaries, BinaryResolver};
+use crate::credential_manager::{CredentialError, CredentialManager};
 use crate::external_dependencies::{
     ExternalDependencies, ExternalDependency, RequiredExternalDependency,
 };
@@ -21,6 +22,7 @@ use crate::{
 };
 
 use log::{debug, error, info, warn};
+use monero_address_creator::Seed as MoneroSeed;
 use regex::Regex;
 use sentry::integrations::anyhow::capture_anyhow;
 use serde::Serialize;
@@ -1380,4 +1382,47 @@ pub async fn set_visual_mode<'r>(
         );
     }
     Ok(())
+}
+
+#[tauri::command]
+pub async fn get_monero_seed_words(
+    state: tauri::State<'_, UniverseAppState>,
+    app: tauri::AppHandle,
+) -> Result<Vec<String>, String> {
+    let timer = Instant::now();
+
+    if !state.config.read().await.monero_address_is_generated() {
+        return Err(
+            "Monero seed words are not available when a Monero address is provided".to_string(),
+        );
+    }
+
+    let config_path = app
+        .path()
+        .app_config_dir()
+        .expect("Could not get config dir");
+
+    let cm = CredentialManager::default_with_dir(config_path);
+    let cred = match cm.get_credentials() {
+        Ok(cred) => cred,
+        Err(e @ CredentialError::PreviouslyUsedKeyring) => {
+            return Err(e.to_string());
+        }
+        Err(e) => {
+            error!(target: LOG_TARGET, "Could not get credentials: {:?}", e);
+            return Err(e.to_string());
+        }
+    };
+
+    let seed = cred
+        .monero_seed
+        .expect("Couldn't get seed from credentials");
+
+    let seed = MoneroSeed::new(seed);
+
+    if timer.elapsed() > MAX_ACCEPTABLE_COMMAND_TIME {
+        warn!(target: LOG_TARGET, "get_seed_words took too long: {:?}", timer.elapsed());
+    }
+
+    seed.seed_words().map_err(|e| e.to_string())
 }

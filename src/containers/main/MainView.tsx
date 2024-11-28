@@ -1,4 +1,3 @@
-import { AppContentContainer } from '@app/App/App.styles';
 import { useUpdateSystemTray } from '@app/hooks';
 
 import { DashboardContainer } from '@app/theme/styles.ts';
@@ -10,11 +9,9 @@ export default function MainView() {
     useUpdateSystemTray();
     const visualMode = useAppConfigStore((s) => s.visual_mode);
     return (
-        <AppContentContainer key="main" initial="hidden">
-            <DashboardContainer $visualModeOff={!visualMode}>
-                <SideBar />
-                <Dashboard />
-            </DashboardContainer>
-        </AppContentContainer>
+        <DashboardContainer $visualModeOff={!visualMode}>
+            <SideBar />
+            <Dashboard />
+        </DashboardContainer>
     );
 }

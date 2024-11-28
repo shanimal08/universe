@@ -10,8 +10,8 @@ export function useShuttingDown() {
     useEffect(() => {
         const ul = appWindow.onCloseRequested(async (event) => {
             if (!isShuttingDown) {
-                event.preventDefault();
                 setIsShuttingDown(true);
+                event.preventDefault();
             }
         });
         return () => {
