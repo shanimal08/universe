@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
 import { check, Update } from '@tauri-apps/plugin-updater';
-import { relaunch } from '@tauri-apps/plugin-process';
 
 import { useAppStateStore } from '@app/store/appStateStore';
 import { useAppConfigStore } from '@app/store/useAppConfigStore';
 import { useUIStore } from '@app/store/useUIStore';
+import { invoke } from '@tauri-apps/api/core';
 
 export const useHandleUpdate = () => {
     const setIsAfterAutoUpdate = useAppStateStore((s) => s.setIsAfterAutoUpdate);
@@ -39,7 +39,7 @@ export const useHandleUpdate = () => {
             }
         });
         handleClose();
-        await relaunch();
+        await invoke('restart_application', { shouldStopMiners: true });
     }, [handleClose, updateData]);
 
     const fetchUpdate = useCallback(async () => {
@@ -70,18 +70,16 @@ export const useCheckUpdate = () => {
     const setIsAfterAutoUpdate = useAppStateStore((s) => s.setIsAfterAutoUpdate);
     const setDialogToShow = useUIStore((s) => s.setDialogToShow);
 
-    return useCallback(async () => {
-        try {
-            const updateRes = await check();
-            console.debug(updateRes);
-            if (updateRes && updateRes.available) {
-                setDialogToShow('autoUpdate');
-            } else {
-                setIsAfterAutoUpdate(true);
-            }
-        } catch (error) {
-            console.error('AutoUpdate error:', error);
-            setIsAfterAutoUpdate(true);
-        }
+    return useCallback(() => {
+        check()
+            .then((updateRes) => {
+                console.debug(updateRes);
+                if (updateRes && updateRes.available) {
+                    setDialogToShow('autoUpdate');
+                } else {
+                    setIsAfterAutoUpdate(true);
+                }
+            })
+            .catch(() => setIsAfterAutoUpdate(true));
     }, [setDialogToShow, setIsAfterAutoUpdate]);
 };
