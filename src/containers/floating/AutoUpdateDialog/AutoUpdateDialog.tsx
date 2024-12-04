@@ -20,8 +20,11 @@ export default function AutoUpdateDialog() {
     const open = useUIStore((s) => s.dialogToShow === 'autoUpdate');
 
     useEffect(() => {
+        console.debug(`hasFetched.current= ${hasFetched.current}`);
         if (hasFetched.current) return;
-        fetchUpdate().then(() => (hasFetched.current = true));
+        fetchUpdate().then(() => {
+            hasFetched.current = true;
+        });
     }, [fetchUpdate]);
 
     const subtitle = isLoading ? 'installing-latest-version' : 'would-you-like-to-install';

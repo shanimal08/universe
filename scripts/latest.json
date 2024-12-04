@@ -1,0 +1,11 @@
+{
+    "version": "0.2.0",
+    "notes": "Tari Universe Beta - See the assets to download this version and install",
+    "pub_date": "2024-12-04T18:12:00.212Z",
+    "platforms": {
+        "darwin-aarch64": {
+            "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRaStWcHpFNzBoUm96ZVZlQWNmWjdoMVI5Sm9oOGVObDRhN0NpQ1hjQjRVTWszQXpKWDQvMWNIaHhaekFpam03OHVyZEQrL1JmWm9nUld2MjEwSVlxSi9DTExOVHhyeEFNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzMzMzE3NDU2CWZpbGU6VGFyaSBVbml2ZXJzZSAoQWxwaGEpLmFwcC50YXIuZ3oKNGorODc5bnZ4aVp1MEZkczhzQmZXclVXSDlPZmg1S3ZKcGVydDlKZzVOT3B6VWJqUDZPNFVmQnhyRXhvejVMSCtwdW9aYS93bUtaZVJ4TmNEWmkzQVE9PQo=",
+            "url": "http://localhost:6969/Tari Universe (Alpha)_0.2.0_aarch64.dmg"
+        }
+    }
+}

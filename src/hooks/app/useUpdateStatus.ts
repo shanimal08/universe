@@ -44,7 +44,8 @@ export const useHandleUpdate = () => {
 
     const fetchUpdate = useCallback(async () => {
         const update = await check();
-
+        console.debug(`update= `);
+        console.debug(update);
         if (update) {
             setUpdateData(update);
 
@@ -72,6 +73,7 @@ export const useCheckUpdate = () => {
     return useCallback(async () => {
         try {
             const updateRes = await check();
+            console.debug(updateRes);
             if (updateRes && updateRes.available) {
                 setDialogToShow('autoUpdate');
             } else {
