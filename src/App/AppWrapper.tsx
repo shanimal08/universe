@@ -8,6 +8,7 @@ import {
     useCheckUpdate,
     useDetectMode,
     useDisableRefresh,
+    useInterval,
     useLangaugeResolver,
     useListenForExternalDependencies,
 } from '@app/hooks';
@@ -39,6 +40,8 @@ const sentryOptions = {
 
 setupLogger();
 
+const UPDATE_CHECK_INTERVAL = 1000 * 60 * 60; // 1 hour
+
 export default function AppWrapper() {
     const allowTelemetry = useAppConfigStore((s) => s.allow_telemetry);
     const fetchAppConfig = useAppConfigStore((s) => s.fetchAppConfig);
@@ -54,7 +57,7 @@ export default function AppWrapper() {
     useEffect(() => {
         async function initialize() {
             await fetchAppConfig();
-            await checkUpdateTariUniverse();
+            await checkUpdateTariUniverse(); // first check
             await initSystray();
             await setMiningNetwork();
         }
@@ -69,6 +72,8 @@ export default function AppWrapper() {
             Sentry.close();
         }
     }, [allowTelemetry]);
+
+    useInterval(() => checkUpdateTariUniverse(), UPDATE_CHECK_INTERVAL);
 
     return <App />;
 }
