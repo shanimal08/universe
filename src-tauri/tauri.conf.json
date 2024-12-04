@@ -1,5 +1,5 @@
 {
-    "version": "0.1.0",
+    "version": "0.0.1",
     "productName": "Tari Universe (Alpha)",
     "mainBinaryName": "Tari Universe (Alpha)",
     "identifier": "com.tari.universe.alpha",
@@ -72,7 +72,7 @@
     "plugins": {
         "updater": {
             "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQ2MjFCRDEzNzM1QUY5MjIKUldRaStWcHpFNzBoUnNTRkFlNEd2RXJ2YjVBeUs3bE1OeU1lQTFMTXdsU2RTYks2WERmK0tNQ00K",
-            "endpoints": ["https://github.com/shanimal08/universe/releases/download/v0.2.0/latest.json"],
+            "endpoints": ["https://github.com/shanimal08/universe/releases/download/v0.1.0/latest.json"],
             "windows": {
                 "installMode": "passive"
             }

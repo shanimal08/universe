@@ -1,11 +1,11 @@
 {
-  "version": "0.2.0",
-  "notes": "Tari Universe Beta - See the assets to download this version and install",
-  "pub_date": "2024-12-04T18:12:00.212Z",
-  "platforms": {
-    "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRaStWcHpFNzBoUnVwY0dYTCthRHV0aHEwVm5WbjNMOXBYYnZJTGJPU0RYSVF2b0Y2aG12ZG1NZTFoNVhQQjQ0NW9lelpwUjFGdXdLdGNxSjk1NDRuT2k4amU5RnJiUHcwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzMzMzIzMjc5CWZpbGU6VGFyaSBVbml2ZXJzZSAoQWxwaGEpLmFwcC50YXIuZ3oKYlhyNko4ZW9MK3N4UytIVXBGU3hWbXNabktyTlRrOG0zZVduQkRGMWg4YmpvdW5TeS9mVW5SdHo4ZlhMblNGY1RHYlRuK0orRmoybTd5TXRIbHlKQXc9PQo=",
-      "url": "https://github.com/shanimal08/universe/releases/download/v0.2.0/Tari.Universe.Alpha.app.tar.gz"
+    "version": "0.0.1",
+    "notes": "Tari Universe Beta - See the assets to download this version and install",
+    "pub_date": "2024-12-04T18:12:00.212Z",
+    "platforms": {
+        "darwin-aarch64": {
+            "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRaStWcHpFNzBoUnRuSmNESENEcnYwRnhOQVhWTUdPaTJQMjh2amZCYndsYUNuM2ZoaVBOWkhuVGhLUkhkTGN2d1NOeWloYVVDQlM4SW9oU3lQNXNtSkFVYXZMQ1B1WXdrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzMzMzI0NTgzCWZpbGU6VGFyaSBVbml2ZXJzZSAoQWxwaGEpLmFwcC50YXIuZ3oKL0VIWTZiVStRT2UxU0VwanpKNElOdm00NWhKb2lZNVF2WGN3a1NFUURxKzNJOHo5WURWWEFjakZ3RDNmRkhVTzRUSnJKNmtvTmhSSHkyWS9QSFBCQ1E9PQo=",
+            "url": "https://github.com/shanimal08/universe/releases/download/v0.0.1/Tari.Universe.Alpha.app.tar.gz"
+        }
     }
-  }
 }
