@@ -5,11 +5,11 @@ import { IGNORE_FETCHING } from '@app/App/sentryIgnore';
 import { initSystray } from '@app/utils';
 
 import {
+    useCheckUpdate,
     useDetectMode,
     useDisableRefresh,
     useLangaugeResolver,
     useListenForExternalDependencies,
-    useUpdateListener,
 } from '@app/hooks';
 
 import packageInfo from '../../package.json';
@@ -43,10 +43,10 @@ export default function AppWrapper() {
     const allowTelemetry = useAppConfigStore((s) => s.allow_telemetry);
     const fetchAppConfig = useAppConfigStore((s) => s.fetchAppConfig);
     const setMiningNetwork = useMiningStore((s) => s.setMiningNetwork);
+    const checkUpdateTariUniverse = useCheckUpdate();
 
     useDetectMode();
     useDisableRefresh();
-    useUpdateListener();
     useLangaugeResolver();
     useListenForExternalDependencies();
     useListenForCriticalProblem();
@@ -54,6 +54,7 @@ export default function AppWrapper() {
     useEffect(() => {
         async function initialize() {
             await fetchAppConfig();
+            await checkUpdateTariUniverse();
             await initSystray();
             await setMiningNetwork();
         }
