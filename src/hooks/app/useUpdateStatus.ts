@@ -25,7 +25,7 @@ export const useHandleUpdate = () => {
         setIsLoading(true);
         console.info('Installing latest version of Tari Universe');
 
-        await updateData.downloadAndInstall((event) => {
+        await updateData.downloadAndInstall(async (event) => {
             switch (event.event) {
                 case 'Started':
                     setContentLength(event.data.contentLength || 0);
@@ -35,6 +35,7 @@ export const useHandleUpdate = () => {
                     break;
                 case 'Finished':
                     console.info('download finished');
+                    await invoke('restart_application', { shouldStopMiners: true });
                     break;
             }
         });
