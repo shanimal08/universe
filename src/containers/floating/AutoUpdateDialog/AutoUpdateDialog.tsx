@@ -20,7 +20,6 @@ export default function AutoUpdateDialog() {
     const open = useUIStore((s) => s.dialogToShow === 'autoUpdate');
 
     useEffect(() => {
-        console.debug(`hasFetched.current= ${hasFetched.current}`);
         if (hasFetched.current) return;
         fetchUpdate().then(() => {
             hasFetched.current = true;
@@ -34,6 +33,10 @@ export default function AutoUpdateDialog() {
                 <Typography variant="h3">{t('new-tari-version-available')}</Typography>
                 <Typography variant="p">{t(subtitle, { version: updateData?.version })}</Typography>
                 {isLoading && <UpdatedStatus contentLength={contentLength} downloaded={downloaded} />}
+
+                {downloaded > 0 && downloaded === contentLength ? (
+                    <Typography variant="p">{`Update downloaded: Restarting Tari Universe`}</Typography>
+                ) : null}
                 <ButtonsWrapper>
                     {!isLoading && updateData && (
                         <>

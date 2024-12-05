@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
 import { check, Update } from '@tauri-apps/plugin-updater';
+import { relaunch } from '@tauri-apps/plugin-process';
 
 import { useAppStateStore } from '@app/store/appStateStore';
 import { useAppConfigStore } from '@app/store/useAppConfigStore';
 import { useUIStore } from '@app/store/useUIStore';
-import { invoke } from '@tauri-apps/api/core';
 
 export const useHandleUpdate = () => {
     const setIsAfterAutoUpdate = useAppStateStore((s) => s.setIsAfterAutoUpdate);
@@ -25,7 +25,7 @@ export const useHandleUpdate = () => {
         setIsLoading(true);
         console.info('Installing latest version of Tari Universe');
 
-        await updateData.downloadAndInstall(async (event) => {
+        await updateData.download(async (event) => {
             switch (event.event) {
                 case 'Started':
                     setContentLength(event.data.contentLength || 0);
@@ -35,18 +35,18 @@ export const useHandleUpdate = () => {
                     break;
                 case 'Finished':
                     console.info('download finished');
-                    await invoke('restart_application', { shouldStopMiners: true });
+                    setIsLoading(false);
+                    updateData.install().then(async () => {
+                        handleClose();
+                        await relaunch();
+                    });
                     break;
             }
         });
-        handleClose();
-        await invoke('restart_application', { shouldStopMiners: true });
     }, [handleClose, updateData]);
 
     const fetchUpdate = useCallback(async () => {
         const update = await check();
-        console.debug(`update= `);
-        console.debug(update);
         if (update) {
             setUpdateData(update);
 
@@ -74,7 +74,6 @@ export const useCheckUpdate = () => {
     return useCallback(() => {
         check()
             .then((updateRes) => {
-                console.debug(updateRes);
                 if (updateRes && updateRes.available) {
                     setDialogToShow('autoUpdate');
                 } else {
