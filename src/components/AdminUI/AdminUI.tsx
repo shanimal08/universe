@@ -8,9 +8,10 @@ import { GreenModalsGroup } from './groups/GreenModalsGroup';
 import { ToastsGroup } from './groups/ToastsGroup';
 import { OtherUIGroup } from './groups/OtherUIGroup';
 import { AnimatePresence } from 'framer-motion';
+import { AnimationGroup } from '@app/components/AdminUI/groups/AnimationGroup.tsx';
 
 export default function AdminUI() {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
 
     const { refs, floatingStyles, context } = useFloating({
         open: isOpen,
@@ -36,6 +37,7 @@ export default function AdminUI() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
                         >
+                            <AnimationGroup />
                             <ThemeGroup />
                             <DialogsGroup />
                             <GreenModalsGroup />

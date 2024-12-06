@@ -42,9 +42,9 @@ export interface Properties extends Record<string, unknown> {
 
 export interface StateManager extends Record<string, unknown> {
     set(e: GlAppState): void;
-    statusIndex: unknown;
-    status: unknown;
-    result: unknown;
+    statusIndex: number;
+    status: string;
+    result: string;
     stateSignal: unknown;
     spawnSignal: unknown;
     endCycleSignal: unknown;

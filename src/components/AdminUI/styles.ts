@@ -73,6 +73,12 @@ export const Button = styled('button')<{ $isActive?: boolean }>`
     }
 `;
 
+export const CategoryWrapper = styled.div`
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+`;
 export const CategoryLabel = styled('div')`
     color: #999;
     font-size: 11px;

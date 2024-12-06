@@ -78,8 +78,11 @@ export const useBlockchainVisualisationStore = create<BlockchainVisualisationSto
         }, 2000);
     },
     handleWinReplay: (txItem) => {
+        const status = window.glApp.stateManager.status;
+        console.debug(`status= ${status}`);
         useMiningStore.getState().setIsReplaying(true);
-        const isAnimating = window.glApp.stateManager.status == 'free';
+        const isAnimating = status && status !== 'not-started';
+        console.debug(`isAnimating= ${isAnimating}`);
         const earnings = txItem.amount;
         const successTier = getSuccessTier(earnings);
         const handleReplay = () => {
