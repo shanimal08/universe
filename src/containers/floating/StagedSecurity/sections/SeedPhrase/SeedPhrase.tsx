@@ -41,11 +41,10 @@ const SeedPhrase = ({ setSection, words }: Props) => {
         setChecked(!checked);
     };
 
-    const wordGroups: string[][] = [];
-
-    for (let i = 0; i < words.length; i += 6) {
-        wordGroups.push(words.slice(i, i + 6));
-    }
+    const divider = 6;
+    const wordGroups = Array.from({ length: words.length / divider }).map((_, i) =>
+        words.slice(divider * i, divider * (i + 1))
+    );
 
     return (
         <Wrapper>

@@ -12,8 +12,8 @@ export function BlockHeightAccent() {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [fontSize, setFontSize] = useState(0);
     const heightStringArr = heightString?.split('') || [];
-    const deferredHeight = useDeferredValue(windowHeight);
-    const deferredFontSize = useDeferredValue(fontSize || 110);
+    const deferredHeight = useDeferredValue(windowHeight, window.innerHeight - 80);
+    const deferredFontSize = useDeferredValue(fontSize, 110);
 
     useEffect(() => {
         let dividend = (deferredHeight - 70) / (heightStringArr.length >= 4 ? heightStringArr.length : 4);

@@ -1,6 +1,6 @@
+import { useCallback, useEffect, useState } from 'react';
 import { Typography } from '@app/components/elements/Typography';
 import { useMiningStore } from '@app/store/useMiningStore';
-import React, { useCallback, useEffect, useState } from 'react';
 import { GpuThreads, MaxConsumptionLevels } from '@app/types/app-status';
 import { RangeInputComponent } from './RangeInput';
 import { useAppConfigStore } from '@app/store/useAppConfigStore';
@@ -121,7 +121,7 @@ export function CustomPowerLevelsDialog({
     if (!maxAvailableThreads) return <LinearProgress />;
 
     return (
-        <React.Fragment>
+        <>
             <CustomLevelsHeader>
                 <Typography>{t('custom-power-levels.title')}</Typography>
                 <TopRightContainer>
@@ -176,6 +176,6 @@ export function CustomPowerLevelsDialog({
                     {t('custom-power-levels.save-changes')}
                 </Button>
             </CustomLevelsContent>
-        </React.Fragment>
+        </>
     );
 }
