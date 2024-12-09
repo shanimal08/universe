@@ -1,6 +1,6 @@
 import { AnimatePresence } from 'framer-motion';
 import { Image, Menu, Text, Trigger, Wrapper } from './styles';
-import { useState } from 'react';
+import { useState, type JSX } from 'react';
 import { autoUpdate, safePolygon, useFloating, useHover, useInteractions } from '@floating-ui/react';
 
 interface Props {
