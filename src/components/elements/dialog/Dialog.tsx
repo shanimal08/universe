@@ -1,9 +1,9 @@
 import {
     createContext,
     Dispatch,
-    forwardRef,
     HTMLProps,
     ReactNode,
+    Ref,
     SetStateAction,
     useContext,
     useMemo,
@@ -106,30 +106,29 @@ export function Dialog({
     return <DialogContext.Provider value={dialog}>{children}</DialogContext.Provider>;
 }
 
-export const DialogContent = forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement> & { $unPadded?: boolean }>(
-    function DialogContent(props, propRef) {
-        const context = useDialogContext();
-        const ref = useMergeRefs([context.refs.setFloating, propRef]);
-        return (
-            <FloatingNode id={context.nodeId}>
-                {context.open ? (
-                    <FloatingPortal>
-                        <Overlay lockScroll>
-                            <FloatingFocusManager context={context.context} modal={false}>
-                                <ContentWrapper
-                                    ref={ref}
-                                    aria-labelledby={context.labelId}
-                                    aria-describedby={context.descriptionId}
-                                    {...context.getFloatingProps(props)}
-                                    $unPadded={props.$unPadded}
-                                >
-                                    {props.children}
-                                </ContentWrapper>
-                            </FloatingFocusManager>
-                        </Overlay>
-                    </FloatingPortal>
-                ) : null}
-            </FloatingNode>
-        );
-    }
-);
+type DialogContentProps = HTMLProps<HTMLDivElement> & { propRef: Ref<HTMLDivElement>; $unPadded?: boolean };
+export const DialogContent = ({ propRef, ...props }: DialogContentProps) => {
+    const context = useDialogContext();
+    const ref = useMergeRefs([context.refs.setFloating, propRef]);
+    return (
+        <FloatingNode id={context.nodeId}>
+            {context.open ? (
+                <FloatingPortal>
+                    <Overlay lockScroll>
+                        <FloatingFocusManager context={context.context} modal={false}>
+                            <ContentWrapper
+                                ref={ref}
+                                aria-labelledby={context.labelId}
+                                aria-describedby={context.descriptionId}
+                                {...context.getFloatingProps(props)}
+                                $unPadded={props.$unPadded}
+                            >
+                                {props.children}
+                            </ContentWrapper>
+                        </FloatingFocusManager>
+                    </Overlay>
+                </FloatingPortal>
+            ) : null}
+        </FloatingNode>
+    );
+};
