@@ -3,12 +3,9 @@ import { setError, useAirdropStore } from '@app/store';
 import { useHandleWsUserIdEvent } from '@app/hooks/airdrop/ws/useHandleWsUserIdEvent.ts';
 import { OnDisconnectEventMessage, socket } from '@app/utils/socket.ts';
 
-const AUTH_EVENT = 'auth';
-
 function useSocketConnection() {
-    const airdropToken = useAirdropStore((s) => s.airdropTokens?.token);
     const [isConnected, setIsConnected] = useState(socket?.connected || false);
-    const [authEvent, setAuthEvent] = useState<string | undefined>();
+
     const [connectError, setConnectError] = useState<Error | undefined>();
     const [disconnectMessage, setDisonnectMessage] = useState<OnDisconnectEventMessage | undefined>();
 
@@ -25,7 +22,6 @@ function useSocketConnection() {
         function onConnect() {
             console.info('Connected to airdrop websocket');
             setIsConnected(true);
-            setAuthEvent(AUTH_EVENT);
         }
         function onConnectError(error: Error) {
             setConnectError(error);
@@ -45,14 +41,6 @@ function useSocketConnection() {
         };
     }, []);
 
-    useEffect(() => {
-        if (!socket) return;
-        if (authEvent?.length && airdropToken) {
-            socket.emit(authEvent, airdropToken, () => {
-                setAuthEvent(undefined);
-            });
-        }
-    }, [airdropToken, authEvent]);
     useEffect(() => {
         if (connectError) {
             setError(`Error connecting to websocket: ${connectError.name}`);

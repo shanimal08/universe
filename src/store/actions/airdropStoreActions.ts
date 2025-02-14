@@ -130,7 +130,7 @@ export const handleAirdropLogout = async () => {
     await setAirdropTokens(undefined);
 };
 
-export const setAirdropTokens = async (airdropTokens?: AirdropTokens, airdropApiUrl?: string) => {
+export const setAirdropTokens = async (airdropTokens?: AirdropTokens) => {
     if (airdropTokens) {
         useAirdropStore.setState({
             airdropTokens: {
@@ -143,11 +143,6 @@ export const setAirdropTokens = async (airdropTokens?: AirdropTokens, airdropApi
             token: airdropTokens.token,
             refreshToken: airdropTokens.refreshToken,
         });
-        console.debug(`airdropApiUrl= `, airdropApiUrl);
-        console.debug(`airdropTokens.token= `, airdropTokens.token);
-        if (airdropApiUrl && airdropTokens.token) {
-            initialiseSocket(airdropApiUrl, airdropTokens.token);
-        }
     } else {
         // User not connected
         useAirdropStore.setState((currentState) => ({
@@ -256,8 +251,12 @@ export const fetchAllUserData = async () => {
 
         await Promise.all(requests);
     };
-
-    if (useAirdropStore.getState().airdropTokens?.token) {
+    const authToken = useAirdropStore.getState().airdropTokens?.token;
+    if (authToken) {
         await fetchData();
+        const airdropApiUrl = useAirdropStore.getState().backendInMemoryConfig?.airdropApiUrl;
+        if (airdropApiUrl) {
+            initialiseSocket(airdropApiUrl, authToken);
+        }
     }
 };

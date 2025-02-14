@@ -1,13 +1,19 @@
 import { useCallback, useEffect } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { socket } from '@app/utils/socket.ts';
-import { useAirdropStore, useAppConfigStore, useMiningMetricsStore, useMiningStore } from '@app/store';
+import {
+    useAirdropStore,
+    useAppConfigStore,
+    useBlockchainVisualisationStore,
+    useMiningMetricsStore,
+    useMiningStore,
+} from '@app/store';
 
 const MINING_EVENT_NAME = 'mining-status';
 const MINING_EVENT_INTERVAL_MS = 15 * 1000;
 function useHandleEmitMiningStatus() {
     const version = import.meta.env.VITE_TARI_UNIVERSE_VERSION;
-    const blockHeight = useMiningMetricsStore((s) => s.base_node_status.block_height);
+    const blockHeight = useBlockchainVisualisationStore((s) => s.displayBlockHeight);
     const appId = useAppConfigStore((state) => state.anon_id);
     const network = useMiningStore((state) => state.network);
     const userId = useAirdropStore((s) => s.userDetails?.user?.id);
@@ -29,7 +35,6 @@ function useHandleEmitMiningStatus() {
             })
                 .then(async (signatureData) => {
                     if (signatureData && socket) {
-                        console.info('Emitting mining status event');
                         await socket.timeout(5000).emitWithAck(MINING_EVENT_NAME, {
                             data: payload,
                             signature: signatureData.signature,
