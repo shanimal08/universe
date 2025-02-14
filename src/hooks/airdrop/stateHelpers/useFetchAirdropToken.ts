@@ -24,7 +24,7 @@ export default function useFetchAirdropToken({ canListen = false }: { canListen?
 
                         if (tokenResponse) {
                             clearInterval(interval);
-                            await setAirdropTokens(tokenResponse);
+                            await setAirdropTokens(tokenResponse, apiUrl);
                             await fetchAllUserData();
 
                             if (tokenResponse.installReward) {

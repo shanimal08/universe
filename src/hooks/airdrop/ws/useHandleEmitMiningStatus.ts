@@ -14,6 +14,7 @@ function useHandleEmitMiningStatus() {
 
     return useCallback(
         ({ isMining }: { isMining: boolean }) => {
+            if (!socket || !socket?.connected) return;
             const payload = {
                 isMining,
                 appId,
@@ -27,7 +28,7 @@ function useHandleEmitMiningStatus() {
                 data: transformed,
             })
                 .then(async (signatureData) => {
-                    if (signatureData) {
+                    if (signatureData && socket) {
                         await socket.timeout(5000).emitWithAck(MINING_EVENT_NAME, {
                             data: payload,
                             signature: signatureData.signature,

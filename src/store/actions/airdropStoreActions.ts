@@ -16,6 +16,7 @@ import {
     UserPoints,
 } from '@app/store';
 import { handleAirdropRequest } from '@app/hooks/airdrop/utils/useHandleRequest.ts';
+import { initialiseSocket, removeSocket } from '@app/utils/socket.ts';
 
 interface TokenResponse {
     exp: number;
@@ -58,6 +59,7 @@ const fetchBackendInMemoryConfig = async () => {
 
     try {
         backendInMemoryConfig = await invoke('get_app_in_memory_config', {});
+
         const airdropTokens = (await invoke('get_airdrop_tokens')) || {};
         const newState: AirdropStoreState = {
             backendInMemoryConfig,
@@ -124,11 +126,11 @@ export const airdropSetup = async () => {
     }
 };
 export const handleAirdropLogout = async () => {
-    console.error('Error fetching user details, logging out');
+    removeSocket();
     await setAirdropTokens(undefined);
 };
 
-export const setAirdropTokens = async (airdropTokens?: AirdropTokens) => {
+export const setAirdropTokens = async (airdropTokens?: AirdropTokens, airdropApiUrl?: string) => {
     if (airdropTokens) {
         useAirdropStore.setState({
             airdropTokens: {
@@ -141,6 +143,11 @@ export const setAirdropTokens = async (airdropTokens?: AirdropTokens) => {
             token: airdropTokens.token,
             refreshToken: airdropTokens.refreshToken,
         });
+        console.debug(`airdropApiUrl= `, airdropApiUrl);
+        console.debug(`airdropTokens.token= `, airdropTokens.token);
+        if (airdropApiUrl && airdropTokens.token) {
+            initialiseSocket(airdropApiUrl, airdropTokens.token);
+        }
     } else {
         // User not connected
         useAirdropStore.setState((currentState) => ({
@@ -191,10 +198,12 @@ export const fetchAllUserData = async () => {
                     setUserDetails(data);
                     return data.user;
                 } else {
+                    console.error('Error fetching user details, logging out');
                     handleAirdropLogout();
                 }
             })
             .catch(() => {
+                console.error('Error fetching user details, logging out');
                 handleAirdropLogout();
             });
     };

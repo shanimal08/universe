@@ -1,19 +1,27 @@
 import { io } from 'socket.io-client';
-import { useAirdropStore } from '@app/store/useAirdropStore.ts';
+
 import { useMiningStore } from '@app/store';
 
-const AIRDROP_WS_URL = useAirdropStore.getState().backendInMemoryConfig?.airdropApiUrl;
-const airdropToken = useAirdropStore.getState().airdropTokens?.token;
-const miningNetwork = useMiningStore.getState().network;
-const wsOptions = {
-    autoConnect: false,
-    auth: {
-        token: airdropToken,
-        network: miningNetwork,
-    },
-    transports: ['websocket', 'polling'],
-    secure: true,
-    withCredentials: true,
+let socket: ReturnType<typeof io> | null = null;
+
+const initialiseSocket = (airdropApiUrl: string, airdropToken: string) => {
+    console.debug('hi !initialiseSocket');
+    const miningNetwork = useMiningStore.getState().network;
+    const wsOptions = {
+        auth: {
+            token: airdropToken,
+            network: miningNetwork,
+        },
+        transports: ['websocket', 'polling'],
+        secure: true,
+    };
+
+    socket = io(airdropApiUrl, wsOptions);
 };
 
-export const socket = io(AIRDROP_WS_URL, wsOptions);
+function removeSocket() {
+    if (!socket) return;
+    socket.disconnect();
+    socket = null;
+}
+export { socket, initialiseSocket, removeSocket };
