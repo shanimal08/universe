@@ -6,7 +6,6 @@ export {
     setBonusTiers,
     setFlareAnimationType,
     setReferralCount,
-    setReferralQuestPoints,
     setUserDetails,
     setUserGems,
     setUserPoints,

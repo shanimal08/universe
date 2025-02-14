@@ -7,7 +7,6 @@ import {
     BackendInMemoryConfig,
     BonusTier,
     ReferralCount,
-    ReferralQuestPoints,
     setAirdropTokensInConfig,
     useAirdropStore,
     useAppConfigStore,
@@ -49,7 +48,6 @@ const clearState: AirdropStoreState = {
     miningRewardPoints: undefined,
     userDetails: undefined,
     userPoints: undefined,
-    referralQuestPoints: undefined,
     bonusTiers: undefined,
     flareAnimationType: undefined,
 };
@@ -164,8 +162,7 @@ export const setBonusTiers = (bonusTiers: BonusTier[]) => useAirdropStore.setSta
 export const setFlareAnimationType = (flareAnimationType?: AnimationType) =>
     useAirdropStore.setState({ flareAnimationType });
 export const setReferralCount = (referralCount: ReferralCount) => useAirdropStore.setState({ referralCount });
-export const setReferralQuestPoints = (referralQuestPoints: ReferralQuestPoints) =>
-    useAirdropStore.setState({ referralQuestPoints });
+
 export const setUserDetails = (userDetails?: UserDetails) => useAirdropStore.setState({ userDetails });
 export const setUserGems = (userGems: number) =>
     useAirdropStore.setState((state) => {
