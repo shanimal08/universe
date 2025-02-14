@@ -29,6 +29,7 @@ function useHandleEmitMiningStatus() {
             })
                 .then(async (signatureData) => {
                     if (signatureData && socket) {
+                        console.info('Emitting mining status event');
                         await socket.timeout(5000).emitWithAck(MINING_EVENT_NAME, {
                             data: payload,
                             signature: signatureData.signature,

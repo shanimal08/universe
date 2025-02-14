@@ -1,27 +1,16 @@
 import { useEffect, useState } from 'react';
 import { setError, useAirdropStore } from '@app/store';
 import { useHandleWsUserIdEvent } from '@app/hooks/airdrop/ws/useHandleWsUserIdEvent.ts';
-import { socket } from '@app/utils/socket.ts';
+import { OnDisconnectEventMessage, socket } from '@app/utils/socket.ts';
 
 const AUTH_EVENT = 'auth';
-
-type DisconnectDescription =
-    | Error
-    | {
-          description: string;
-          context?: unknown;
-      };
 
 function useSocketConnection() {
     const airdropToken = useAirdropStore((s) => s.airdropTokens?.token);
     const [isConnected, setIsConnected] = useState(socket?.connected || false);
     const [authEvent, setAuthEvent] = useState<string | undefined>();
     const [connectError, setConnectError] = useState<Error | undefined>();
-    const [disconnectMessage, setDisonnectMessage] = useState<
-        { reason: string; details?: DisconnectDescription } | undefined
-    >();
-
-    console.debug(socket);
+    const [disconnectMessage, setDisonnectMessage] = useState<OnDisconnectEventMessage | undefined>();
 
     useEffect(() => {
         // no-op if the socket is already connected
@@ -34,13 +23,14 @@ function useSocketConnection() {
     useEffect(() => {
         if (!socket) return;
         function onConnect() {
+            console.info('Connected to airdrop websocket');
             setIsConnected(true);
             setAuthEvent(AUTH_EVENT);
         }
         function onConnectError(error: Error) {
             setConnectError(error);
         }
-        function onDisconnect(reason: string, details?: DisconnectDescription) {
+        function onDisconnect(reason: string, details?: OnDisconnectEventMessage['details']) {
             setIsConnected(false);
             setDisonnectMessage({ reason, details });
         }
@@ -63,17 +53,16 @@ function useSocketConnection() {
             });
         }
     }, [airdropToken, authEvent]);
-
     useEffect(() => {
         if (connectError) {
-            // setError(`Error connecting to websocket: ${connectError.name}`);
+            setError(`Error connecting to websocket: ${connectError.name}`);
             console.error('Error connecting to websocket:', connectError);
             return () => setConnectError(undefined);
         }
     }, [connectError]);
     useEffect(() => {
         if (disconnectMessage) {
-            // setError(`Disconnected from websocket: ${disconnectMessage.reason}`);
+            setError(`Disconnected from websocket: ${disconnectMessage.reason}`);
             console.error('Disconnected from websocket:', disconnectMessage);
             return () => setDisonnectMessage(undefined);
         }
@@ -88,6 +77,7 @@ function useSocketEvents() {
     useEffect(() => {
         if (!userId || !socket) return;
         function onHandshakeUserId(event: string) {
+            console.info(`WS Event: ${event}`);
             handleWsUserIdEvent(event);
         }
         socket.on(userId, onHandshakeUserId);
