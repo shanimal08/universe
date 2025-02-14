@@ -35,6 +35,7 @@ export default function useSocketEvents() {
     }, []);
 
     useEffect(() => {
+        console.debug(`socket= `, socket);
         if (!socket) return;
 
         const onConnect = () => {
