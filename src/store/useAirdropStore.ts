@@ -90,7 +90,6 @@ export interface AirdropStoreState {
     airdropTokens?: AirdropTokens;
     userDetails?: UserDetails;
     userPoints?: UserPoints;
-    referralCount?: ReferralCount;
     backendInMemoryConfig?: BackendInMemoryConfig;
     flareAnimationType?: AnimationType;
     bonusTiers?: BonusTier[];

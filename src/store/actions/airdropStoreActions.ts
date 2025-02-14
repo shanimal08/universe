@@ -6,7 +6,6 @@ import {
     AnimationType,
     BackendInMemoryConfig,
     BonusTier,
-    ReferralCount,
     setAirdropTokensInConfig,
     useAirdropStore,
     useAppConfigStore,
@@ -161,7 +160,6 @@ export const setAuthUuid = (authUuid: string) => useAirdropStore.setState({ auth
 export const setBonusTiers = (bonusTiers: BonusTier[]) => useAirdropStore.setState({ bonusTiers });
 export const setFlareAnimationType = (flareAnimationType?: AnimationType) =>
     useAirdropStore.setState({ flareAnimationType });
-export const setReferralCount = (referralCount: ReferralCount) => useAirdropStore.setState({ referralCount });
 
 export const setUserDetails = (userDetails?: UserDetails) => useAirdropStore.setState({ userDetails });
 export const setUserGems = (userGems: number) =>
@@ -170,13 +168,11 @@ export const setUserGems = (userGems: number) =>
             ...state.userPoints,
             base: { ...state.userPoints?.base, gems: userGems },
         } as UserPoints;
-
         return {
             userPoints: userPointsFormatted,
         };
     });
-export const setUserPoints = (userPoints: UserPoints) =>
-    useAirdropStore.setState({ userPoints, referralCount: userPoints?.referralCount });
+export const setUserPoints = (userPoints: UserPoints) => useAirdropStore.setState({ userPoints });
 
 export const fetchAllUserData = async () => {
     const fetchUserDetails = async () => {
@@ -214,18 +210,7 @@ export const fetchAllUserData = async () => {
             },
         });
     };
-    // GET USER REFERRAL POINTS
-    const fetchUserReferralPoints = async () => {
-        const data = await handleAirdropRequest<{ count: ReferralCount }>({
-            path: '/miner/download/referral-count',
-            method: 'GET',
-        });
-        if (!data?.count) return;
-        setReferralCount({
-            gems: data.count.gems,
-            count: data.count.count,
-        });
-    };
+
     // FETCH BONUS TIERS
     const fetchBonusTiers = async () => {
         const data = await handleAirdropRequest<{ tiers: BonusTier[] }>({
@@ -243,9 +228,7 @@ export const fetchAllUserData = async () => {
         if (!details?.rank?.gems) {
             requests.push(fetchUserPoints());
         }
-        requests.push(fetchUserReferralPoints());
         requests.push(fetchBonusTiers());
-
         await Promise.all(requests);
     };
     const authToken = useAirdropStore.getState().airdropTokens?.token;

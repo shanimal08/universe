@@ -5,7 +5,6 @@ export {
     setAuthUuid,
     setBonusTiers,
     setFlareAnimationType,
-    setReferralCount,
     setUserDetails,
     setUserGems,
     setUserPoints,

@@ -1,6 +1,6 @@
 import { useShellOfSecretsStore } from '@app/store/useShellOfSecretsStore';
 import { WebsocketEventNames, WebsocketUserEvent } from '@app/types/ws';
-import { setFlareAnimationType, setUserGems } from '@app/store';
+import { setFlareAnimationType, setUserPoints } from '@app/store';
 import { useCallback } from 'react';
 
 const setTotalBonusTimeMs = useShellOfSecretsStore.getState().setTotalBonusTimeMs;
@@ -15,8 +15,16 @@ export function useHandleWsUserIdEvent() {
                 setFlareAnimationType('FriendAccepted');
                 break;
             case WebsocketEventNames.COMPLETED_QUEST:
-                if (eventParsed.data.userPoints?.gems) {
-                    setUserGems(eventParsed.data.userPoints?.gems);
+                console.debug(eventParsed.data.questName, eventParsed.data.userPoints);
+                if (eventParsed.data.userPoints) {
+                    setUserPoints({
+                        ...eventParsed.data.userPoints,
+                        base: {
+                            gems: eventParsed.data.userPoints.gems,
+                            shells: eventParsed.data.userPoints.shells,
+                            hammers: eventParsed.data.userPoints.hammers,
+                        },
+                    });
                 }
                 break;
             case WebsocketEventNames.MINING_STATUS_CREW_UPDATE: {
