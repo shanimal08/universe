@@ -34,6 +34,7 @@ function useSocketConnection() {
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
         socket.on('connect_error', onConnectError);
+
         return () => {
             socket?.off('connect', onConnect);
             socket?.off('disconnect', onDisconnect);
@@ -48,6 +49,7 @@ function useSocketConnection() {
             return () => setConnectError(undefined);
         }
     }, [connectError]);
+
     useEffect(() => {
         if (disconnectMessage) {
             setError(`Disconnected from websocket: ${disconnectMessage.reason}`);
