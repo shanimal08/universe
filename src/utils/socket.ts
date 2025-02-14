@@ -15,8 +15,7 @@ interface OnDisconnectEventMessage {
 }
 
 let socket: ReturnType<typeof io> | null = null;
-const SUBSCRIBE_EVENT = 'subscribe-to-gem-updates';
-const AUTH_EVENT = 'auth';
+export const SUBSCRIBE_EVENT = 'subscribe-to-gem-updates';
 const version = import.meta.env.VITE_TARI_UNIVERSE_VERSION;
 
 const initialiseSocket = (airdropApiUrl: string, airdropToken: string) => {
@@ -35,12 +34,9 @@ const initialiseSocket = (airdropApiUrl: string, airdropToken: string) => {
 
     socket = io(airdropApiUrl, wsOptions);
     console.info('Socket initialised');
-    socket.emit(SUBSCRIBE_EVENT);
-    socket.emit(AUTH_EVENT, airdropToken);
 };
 
 function removeSocket() {
-    socket?.disconnect();
     socket = null;
     console.info('Socket removed');
 }
