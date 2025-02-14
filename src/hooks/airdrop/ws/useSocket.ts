@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { socket } from '@app/utils/socket.ts';
-import { setError, useAirdropStore, useAppConfigStore, useMiningMetricsStore, useMiningStore } from '@app/store';
+import { setError, useAirdropStore } from '@app/store';
 import { useHandleWsUserIdEvent } from '@app/hooks/airdrop/ws/useHandleWsUserIdEvent.ts';
 
 const AUTH_EVENT = 'auth';
+
 type DisconnectDescription =
     | Error
     | {
@@ -91,16 +92,4 @@ function useSocketEvents() {
     }, [handleWsUserIdEvent, userId]);
 }
 
-function useHandleEmitMiningStatus() {
-    const { userId, baseUrl } = useAirdropStore((s) => ({
-        userId: s.userDetails?.user?.id,
-        baseUrl: s.backendInMemoryConfig?.airdropApiUrl,
-    }));
-    const cpuMiningStatus = useMiningMetricsStore((state) => state.cpu_mining_status);
-    const gpuMiningStatus = useMiningMetricsStore((state) => state.gpu_mining_status);
-    const network = useMiningStore((state) => state.network);
-    const appId = useAppConfigStore((state) => state.anon_id);
-    const isConnectedToNetwork = useMiningMetricsStore((state) => state.isNodeConnected);
-
-    return useCallback(async () => {}, []);
-}
+export { useSocketEvents, useSocketConnection };

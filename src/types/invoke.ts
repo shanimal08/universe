@@ -12,6 +12,7 @@ import {
 import { Language } from '@app/i18initializer';
 import { PaperWalletDetails } from '@app/types/app-status.ts';
 import { displayMode, modeType } from '@app/store/types.ts';
+import { SignData } from '@app/types/ws.ts';
 
 declare module '@tauri-apps/api/core' {
     function invoke(
@@ -97,4 +98,5 @@ declare module '@tauri-apps/api/core' {
     ): Promise<ApplicationsVersions>;
     function invoke(param: 'get_audio_enabled'): Promise<boolean>;
     function invoke(param: 'set_audio_enabled', payload: { enabled: boolean }): Promise<void>;
+    function invoke(param: 'sign_ws_data', payload: { data: string }): Promise<SignData>;
 }

@@ -6,6 +6,11 @@ export enum WebsocketEventNames {
     MINING_STATUS_USER_UPDATE = 'mining_status_user_update',
 }
 
+export interface SignData {
+    signature: string;
+    pubKey: string;
+}
+
 export interface QuestCompletedEvent {
     name: WebsocketEventNames.COMPLETED_QUEST;
     data: {
