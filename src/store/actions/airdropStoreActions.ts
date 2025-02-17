@@ -115,7 +115,7 @@ export const airdropSetup = async () => {
         await getExistingTokens();
         if (beConfig?.airdropUrl) {
             console.info('Refreshing airdrop tokens');
-            await handleRefreshAirdropTokens(beConfig.airdropUrl);
+            await handleRefreshAirdropTokens();
             await fetchAllUserData();
         }
     } catch (error) {
@@ -129,6 +129,11 @@ export const handleAirdropLogout = async () => {
 
 export const setAirdropTokens = async (airdropTokens?: AirdropTokens) => {
     if (airdropTokens) {
+        const airdropApiUrl = useAirdropStore.getState().backendInMemoryConfig?.airdropApiUrl;
+        const authToken = airdropTokens?.token;
+        if (airdropApiUrl && authToken) {
+            initialiseSocket(airdropApiUrl, authToken);
+        }
         useAirdropStore.setState({
             airdropTokens: {
                 ...airdropTokens,
@@ -234,9 +239,5 @@ export const fetchAllUserData = async () => {
     const authToken = useAirdropStore.getState().airdropTokens?.token;
     if (authToken) {
         await fetchData();
-        const airdropApiUrl = useAirdropStore.getState().backendInMemoryConfig?.airdropApiUrl;
-        if (airdropApiUrl) {
-            initialiseSocket(airdropApiUrl, authToken);
-        }
     }
 };
