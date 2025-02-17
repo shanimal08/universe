@@ -1,9 +1,14 @@
 export enum WebsocketEventNames {
     COMPLETED_QUEST = 'completed_quest',
+    REFERRAL_INSTALL_REWARD = 'referral_install_reward',
     MINING_STATUS_CREW_UPDATE = 'mining_status_crew_update',
     MINING_STATUS_CREW_DISCONNECTED = 'mining_status_crew_disconnected',
-    REFERRAL_INSTALL_REWARD = 'referral_install_reward',
     MINING_STATUS_USER_UPDATE = 'mining_status_user_update',
+}
+
+export interface SignData {
+    signature: string;
+    pubKey: string;
 }
 
 export interface QuestCompletedEvent {

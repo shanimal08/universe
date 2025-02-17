@@ -39,6 +39,7 @@ export async function handleRefreshAirdropTokens(airdropApiUrl: string) {
             console.error('Error refreshing airdrop tokens:', error);
         }
     }
+
     await setAirdropTokens(tokens);
 }
 export function useAirdropTokensRefresh() {

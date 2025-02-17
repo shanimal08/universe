@@ -6,8 +6,6 @@ import {
     AnimationType,
     BackendInMemoryConfig,
     BonusTier,
-    ReferralCount,
-    ReferralQuestPoints,
     setAirdropTokensInConfig,
     useAirdropStore,
     useAppConfigStore,
@@ -16,6 +14,7 @@ import {
     UserPoints,
 } from '@app/store';
 import { handleAirdropRequest } from '@app/hooks/airdrop/utils/useHandleRequest.ts';
+import { initialiseSocket, removeSocket } from '@app/utils/socket.ts';
 
 interface TokenResponse {
     exp: number;
@@ -48,7 +47,6 @@ const clearState: AirdropStoreState = {
     miningRewardPoints: undefined,
     userDetails: undefined,
     userPoints: undefined,
-    referralQuestPoints: undefined,
     bonusTiers: undefined,
     flareAnimationType: undefined,
 };
@@ -58,6 +56,7 @@ const fetchBackendInMemoryConfig = async () => {
 
     try {
         backendInMemoryConfig = await invoke('get_app_in_memory_config', {});
+
         const airdropTokens = (await invoke('get_airdrop_tokens')) || {};
         const newState: AirdropStoreState = {
             backendInMemoryConfig,
@@ -124,7 +123,7 @@ export const airdropSetup = async () => {
     }
 };
 export const handleAirdropLogout = async () => {
-    console.error('Error fetching user details, logging out');
+    removeSocket();
     await setAirdropTokens(undefined);
 };
 
@@ -161,9 +160,7 @@ export const setAuthUuid = (authUuid: string) => useAirdropStore.setState({ auth
 export const setBonusTiers = (bonusTiers: BonusTier[]) => useAirdropStore.setState({ bonusTiers });
 export const setFlareAnimationType = (flareAnimationType?: AnimationType) =>
     useAirdropStore.setState({ flareAnimationType });
-export const setReferralCount = (referralCount: ReferralCount) => useAirdropStore.setState({ referralCount });
-export const setReferralQuestPoints = (referralQuestPoints: ReferralQuestPoints) =>
-    useAirdropStore.setState({ referralQuestPoints });
+
 export const setUserDetails = (userDetails?: UserDetails) => useAirdropStore.setState({ userDetails });
 export const setUserGems = (userGems: number) =>
     useAirdropStore.setState((state) => {
@@ -171,13 +168,11 @@ export const setUserGems = (userGems: number) =>
             ...state.userPoints,
             base: { ...state.userPoints?.base, gems: userGems },
         } as UserPoints;
-
         return {
             userPoints: userPointsFormatted,
         };
     });
-export const setUserPoints = (userPoints: UserPoints) =>
-    useAirdropStore.setState({ userPoints, referralCount: userPoints?.referralCount });
+export const setUserPoints = (userPoints: UserPoints) => useAirdropStore.setState({ userPoints });
 
 export const fetchAllUserData = async () => {
     const fetchUserDetails = async () => {
@@ -191,10 +186,12 @@ export const fetchAllUserData = async () => {
                     setUserDetails(data);
                     return data.user;
                 } else {
+                    console.error('Error fetching user details, logging out');
                     handleAirdropLogout();
                 }
             })
             .catch(() => {
+                console.error('Error fetching user details, logging out');
                 handleAirdropLogout();
             });
     };
@@ -213,18 +210,7 @@ export const fetchAllUserData = async () => {
             },
         });
     };
-    // GET USER REFERRAL POINTS
-    const fetchUserReferralPoints = async () => {
-        const data = await handleAirdropRequest<{ count: ReferralCount }>({
-            path: '/miner/download/referral-count',
-            method: 'GET',
-        });
-        if (!data?.count) return;
-        setReferralCount({
-            gems: data.count.gems,
-            count: data.count.count,
-        });
-    };
+
     // FETCH BONUS TIERS
     const fetchBonusTiers = async () => {
         const data = await handleAirdropRequest<{ tiers: BonusTier[] }>({
@@ -242,13 +228,15 @@ export const fetchAllUserData = async () => {
         if (!details?.rank?.gems) {
             requests.push(fetchUserPoints());
         }
-        requests.push(fetchUserReferralPoints());
         requests.push(fetchBonusTiers());
-
         await Promise.all(requests);
     };
-
-    if (useAirdropStore.getState().airdropTokens?.token) {
+    const authToken = useAirdropStore.getState().airdropTokens?.token;
+    if (authToken) {
         await fetchData();
+        const airdropApiUrl = useAirdropStore.getState().backendInMemoryConfig?.airdropApiUrl;
+        if (airdropApiUrl) {
+            initialiseSocket(airdropApiUrl, authToken);
+        }
     }
 };
