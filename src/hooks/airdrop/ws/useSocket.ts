@@ -11,7 +11,6 @@ export default function useSocketEvents() {
     const handleWsUserIdEvent = useHandleWsUserIdEvent();
 
     useEffect(() => {
-        if (!socket) return;
         socket?.connect();
         console.debug('wen socket?.connect();');
         return () => {
@@ -38,7 +37,8 @@ export default function useSocketEvents() {
     }, []);
 
     useEffect(() => {
-        if (!socket) return;
+        console.debug(socket);
+        if (!socket || !!socket?.connect()) return;
 
         const onConnect = () => {
             console.debug('did we connect?');
@@ -48,7 +48,6 @@ export default function useSocketEvents() {
 
         socket?.emit(SUBSCRIBE_EVENT);
         socket?.on('connect', onConnect);
-        console.debug(socket);
 
         return () => {
             socket?.off('connect', onConnect);

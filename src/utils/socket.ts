@@ -19,7 +19,6 @@ export const SUBSCRIBE_EVENT = 'subscribe-to-gem-updates';
 const version = import.meta.env.VITE_TARI_UNIVERSE_VERSION;
 
 const initialiseSocket = (airdropApiUrl: string, airdropToken: string) => {
-    console.debug(airdropToken);
     if (socket && socket.connect()) return;
     const appId = useAppConfigStore.getState().anon_id;
     const miningNetwork = useMiningStore.getState().network;
