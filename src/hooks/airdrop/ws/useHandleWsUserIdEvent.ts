@@ -11,6 +11,19 @@ export function useHandleWsUserIdEvent() {
                 console.debug(eventParsed);
                 setFlareAnimationType('FriendAccepted');
                 break;
+            case WebsocketEventNames.USER_SCORE_UPDATE:
+                console.debug(eventParsed);
+                if (eventParsed.data.userPoints) {
+                    setUserPoints({
+                        ...eventParsed.data.userPoints,
+                        base: {
+                            gems: eventParsed.data.userPoints.gems,
+                            shells: eventParsed.data.userPoints.shells,
+                            hammers: eventParsed.data.userPoints.hammers,
+                        },
+                    });
+                }
+                break;
             case WebsocketEventNames.COMPLETED_QUEST:
                 console.debug(eventParsed.data.questName, eventParsed.data.userPoints);
                 if (eventParsed.data.userPoints) {
