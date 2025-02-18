@@ -1,27 +1,33 @@
 import { useShellOfSecretsStore } from '@app/store/useShellOfSecretsStore';
 import { WebsocketEventNames, WebsocketUserEvent } from '@app/types/ws';
-import { useGetSosReferrals } from '../stateHelpers/useGetSosReferrals';
-import { setFlareAnimationType, setUserGems } from '@app/store';
+import { setFlareAnimationType, setUserPoints } from '@app/store';
+import { useCallback } from 'react';
 
-export const useHandleWsUserIdEvent = () => {
-    const setTotalBonusTimeMs = useShellOfSecretsStore((state) => state.setTotalBonusTimeMs);
-    const referrals = useShellOfSecretsStore((state) => state.referrals);
-    const setReferrals = useShellOfSecretsStore((state) => state.setReferrals);
-    const fetchCrewMemberDetails = useGetSosReferrals();
+const setTotalBonusTimeMs = useShellOfSecretsStore.getState().setTotalBonusTimeMs;
+const referrals = useShellOfSecretsStore.getState().referrals;
+const setReferrals = useShellOfSecretsStore.getState().setReferrals;
 
-    return (event: string) => {
+export function useHandleWsUserIdEvent() {
+    return useCallback((event: string) => {
         const eventParsed = JSON.parse(event) as WebsocketUserEvent;
         switch (eventParsed.name) {
             case WebsocketEventNames.REFERRAL_INSTALL_REWARD:
                 setFlareAnimationType('FriendAccepted');
                 break;
             case WebsocketEventNames.COMPLETED_QUEST:
-                if (eventParsed.data.userPoints?.gems) {
-                    setUserGems(eventParsed.data.userPoints?.gems);
+                console.debug(eventParsed.data.questName, eventParsed.data.userPoints);
+                if (eventParsed.data.userPoints) {
+                    setUserPoints({
+                        ...eventParsed.data.userPoints,
+                        base: {
+                            gems: eventParsed.data.userPoints.gems,
+                            shells: eventParsed.data.userPoints.shells,
+                            hammers: eventParsed.data.userPoints.hammers,
+                        },
+                    });
                 }
                 break;
             case WebsocketEventNames.MINING_STATUS_CREW_UPDATE: {
-                fetchCrewMemberDetails(eventParsed.data.crewMember.id);
                 setTotalBonusTimeMs(eventParsed.data.totalTimeBonusMs);
                 break;
             }
@@ -47,8 +53,7 @@ export const useHandleWsUserIdEvent = () => {
                 setTotalBonusTimeMs(eventParsed.data.totalTimeBonusMs);
                 break;
             default:
-                // eslint-disable-next-line no-console
-                console.log('Unknown event', eventParsed);
+                console.warn('Unknown event', eventParsed);
         }
-    };
-};
+    }, []);
+}

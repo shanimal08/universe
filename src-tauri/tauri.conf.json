@@ -41,7 +41,7 @@
                 "default-src": "'self' asset: tauri: URL: blob: data: https:",
                 "script-src": "'wasm-unsafe-eval'",
                 "style-src": "'self' 'unsafe-inline'",
-                "connect-src": "https: wss://ut.tari.com tauri: ipc: http://ipc.localhost https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-web@0.40.1/dist/dotlottie-player.wasm https://unpkg.com/@lottiefiles/dotlottie-web@0.40.1/dist/dotlottie-player.wasm"
+                "connect-src": "https: wss://rwa.yat.fyi tauri: ipc: http://ipc.localhost https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-web@0.40.1/dist/dotlottie-player.wasm https://unpkg.com/@lottiefiles/dotlottie-web@0.40.1/dist/dotlottie-player.wasm"
             },
             "pattern": {
                 "use": "isolation",
@@ -77,9 +77,7 @@
     "plugins": {
         "updater": {
             "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEYxNUJBOEFEQkQ4RjJBMjYKUldRbUtvKzlyYWhiOFJIUmFFditENVV3d3hRbjNlZm1DMi9aMjluRUpVdHhQTytadTV3ODN3bUMK",
-            "endpoints": [
-                "https://raw.githubusercontent.com/tari-project/universe/main/.updater/alpha-latest.json"
-            ],
+            "endpoints": ["https://raw.githubusercontent.com/tari-project/universe/main/.updater/alpha-latest.json"],
             "windows": {
                 "installMode": "passive"
             }
