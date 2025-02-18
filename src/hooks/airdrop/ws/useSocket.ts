@@ -12,9 +12,7 @@ export default function useSocketEvents() {
 
     useEffect(() => {
         socket?.connect();
-        console.debug('wen socket?.connect();');
         return () => {
-            console.debug('wen socket?.DISconnect();');
             socket?.disconnect();
         };
     }, []);
@@ -37,11 +35,9 @@ export default function useSocketEvents() {
     }, []);
 
     useEffect(() => {
-        console.debug(socket);
-        if (!socket || !!socket?.connect()) return;
+        if (!socket || socket?.connected) return;
 
         const onConnect = () => {
-            console.debug('did we connect?');
             socket?.emit(AUTH_EVENT, airdropToken);
             socket?.on(userId as string, handleWsUserIdEvent);
         };
