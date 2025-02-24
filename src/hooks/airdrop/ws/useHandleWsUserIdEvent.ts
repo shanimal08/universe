@@ -1,11 +1,6 @@
-import { useShellOfSecretsStore } from '@app/store/useShellOfSecretsStore';
 import { WebsocketEventNames, WebsocketUserEvent } from '@app/types/ws';
 import { setFlareAnimationType, setUserPoints } from '@app/store';
 import { useCallback } from 'react';
-
-const setTotalBonusTimeMs = useShellOfSecretsStore.getState().setTotalBonusTimeMs;
-const referrals = useShellOfSecretsStore.getState().referrals;
-const setReferrals = useShellOfSecretsStore.getState().setReferrals;
 
 export function useHandleWsUserIdEvent() {
     return useCallback((event: string) => {
@@ -14,8 +9,7 @@ export function useHandleWsUserIdEvent() {
             case WebsocketEventNames.REFERRAL_INSTALL_REWARD:
                 setFlareAnimationType('FriendAccepted');
                 break;
-            case WebsocketEventNames.COMPLETED_QUEST:
-                console.debug(eventParsed.data.questName, eventParsed.data.userPoints);
+            case WebsocketEventNames.USER_SCORE_UPDATE:
                 if (eventParsed.data.userPoints) {
                     setUserPoints({
                         ...eventParsed.data.userPoints,
@@ -27,30 +21,17 @@ export function useHandleWsUserIdEvent() {
                     });
                 }
                 break;
-            case WebsocketEventNames.MINING_STATUS_CREW_UPDATE: {
-                setTotalBonusTimeMs(eventParsed.data.totalTimeBonusMs);
-                break;
-            }
-
-            case WebsocketEventNames.MINING_STATUS_CREW_DISCONNECTED:
-                if (referrals?.activeReferrals) {
-                    const totalActiveReferrals = (referrals?.totalActiveReferrals || 1) - 1;
-                    const referralsUpdated = referrals?.activeReferrals.map((x) => {
-                        if (x.id === eventParsed.data.crewMemberId) {
-                            return { ...x, active: false };
-                        }
-                        return x;
-                    });
-
-                    setReferrals({
-                        ...referrals,
-                        totalActiveReferrals,
-                        activeReferrals: referralsUpdated,
+            case WebsocketEventNames.COMPLETED_QUEST:
+                if (eventParsed.data.userPoints) {
+                    setUserPoints({
+                        ...eventParsed.data.userPoints,
+                        base: {
+                            gems: eventParsed.data.userPoints.gems,
+                            shells: eventParsed.data.userPoints.shells,
+                            hammers: eventParsed.data.userPoints.hammers,
+                        },
                     });
                 }
-                break;
-            case WebsocketEventNames.MINING_STATUS_USER_UPDATE:
-                setTotalBonusTimeMs(eventParsed.data.totalTimeBonusMs);
                 break;
             default:
                 console.warn('Unknown event', eventParsed);

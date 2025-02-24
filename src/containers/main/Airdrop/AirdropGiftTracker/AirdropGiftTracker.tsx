@@ -1,16 +1,16 @@
 import { useTranslation } from 'react-i18next';
 
 import { useAirdropStore } from '@app/store/useAirdropStore';
-import { useAirdropSyncState } from '@app/hooks/airdrop/useAirdropSyncState';
 
 import InfoTooltip from './components/InfoTooltip/InfoTooltip';
 import LoggedOut from './sections/LoggedOut/LoggedOut';
 import LoggedIn from './sections/LoggedIn/LoggedIn';
 import { Title, TitleWrapper, Wrapper } from './styles';
 import useAirdropWebsocket from '@app/hooks/airdrop/ws/useAirdropWebsocket.ts';
+import { useAirdropTokensRefresh } from '@app/hooks/airdrop/stateHelpers/useAirdropTokensRefresh.ts';
 
 export default function AirdropGiftTracker() {
-    useAirdropSyncState();
+    useAirdropTokensRefresh();
     useAirdropWebsocket();
 
     const { t } = useTranslation(['airdrop'], { useSuspense: false });

@@ -35,8 +35,7 @@ export default function useSocketEvents() {
     }, []);
 
     useEffect(() => {
-        console.debug(`socket= `, socket);
-        if (!socket) return;
+        if (!socket || socket?.connected) return;
 
         const onConnect = () => {
             socket?.emit(AUTH_EVENT, airdropToken);
