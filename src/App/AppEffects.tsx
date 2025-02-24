@@ -13,14 +13,6 @@ import { airdropSetup } from '@app/store';
 
 setupLogger();
 export default function AppEffects() {
-    useDetectMode();
-    useDisableRefresh();
-    useLangaugeResolver();
-    useListenForExternalDependencies();
-    useListenForCriticalProblem();
-    useTauriEventsListener();
-    useListenForAppUpdated({ triggerEffect: true });
-
     useEffect(() => {
         async function initialize() {
             await fetchAppConfig();
@@ -29,6 +21,14 @@ export default function AppEffects() {
         }
         void initialize();
     }, []);
+
+    useDetectMode();
+    useDisableRefresh();
+    useLangaugeResolver();
+    useListenForExternalDependencies();
+    useListenForCriticalProblem();
+    useTauriEventsListener();
+    useListenForAppUpdated({ triggerEffect: true });
 
     return null;
 }
