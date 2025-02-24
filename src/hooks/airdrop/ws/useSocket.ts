@@ -4,9 +4,9 @@ import { useHandleWsUserIdEvent } from '@app/hooks/airdrop/ws/useHandleWsUserIdE
 import { OnDisconnectEventMessage, socket, SUBSCRIBE_EVENT } from '@app/utils/socket.ts';
 
 const AUTH_EVENT = 'auth';
-const userId = useAirdropStore.getState().userDetails?.user?.id;
 
 export default function useSocketEvents() {
+    const userId = useAirdropStore((s) => s.userDetails?.user?.id);
     const airdropToken = useAirdropStore((s) => s.airdropTokens?.token);
     const handleWsUserIdEvent = useHandleWsUserIdEvent();
 
@@ -35,18 +35,18 @@ export default function useSocketEvents() {
     }, []);
 
     useEffect(() => {
-        if (!socket || socket?.connected) return;
+        if (!socket || !userId) return;
 
         const onConnect = () => {
             socket?.emit(AUTH_EVENT, airdropToken);
             socket?.on(userId as string, handleWsUserIdEvent);
         };
 
-        socket?.emit(SUBSCRIBE_EVENT);
-        socket?.on('connect', onConnect);
+        socket.emit(SUBSCRIBE_EVENT);
+        socket.on('connect', onConnect);
 
         return () => {
             socket?.off('connect', onConnect);
         };
-    }, [airdropToken, handleWsUserIdEvent]);
+    }, [airdropToken, handleWsUserIdEvent, userId]);
 }

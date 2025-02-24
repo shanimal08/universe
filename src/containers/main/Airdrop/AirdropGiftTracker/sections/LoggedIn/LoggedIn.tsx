@@ -39,11 +39,13 @@ export default function LoggedIn() {
         }
     }, [flareAnimationType, bonusTier?.bonusGems, miningRewardPoints?.reward]);
 
+    const gemAmount = useMemo(() => userPointsGems ?? userRankGems ?? 0, [userPointsGems, userRankGems]);
+
     return (
         <Wrapper>
             <UserRow>
                 <UserInfo />
-                <Gems number={userPointsGems || userRankGems || 0} label={`Gems`} />
+                <Gems number={gemAmount} label={`Gems`} />
             </UserRow>
 
             <Invite />

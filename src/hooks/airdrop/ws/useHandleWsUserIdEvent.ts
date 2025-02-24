@@ -12,24 +12,14 @@ export function useHandleWsUserIdEvent() {
             case WebsocketEventNames.USER_SCORE_UPDATE:
                 if (eventParsed.data.userPoints) {
                     setUserPoints({
-                        ...eventParsed.data.userPoints,
-                        base: {
-                            gems: eventParsed.data.userPoints.gems,
-                            shells: eventParsed.data.userPoints.shells,
-                            hammers: eventParsed.data.userPoints.hammers,
-                        },
+                        base: eventParsed.data.userPoints,
                     });
                 }
                 break;
             case WebsocketEventNames.COMPLETED_QUEST:
                 if (eventParsed.data.userPoints) {
                     setUserPoints({
-                        ...eventParsed.data.userPoints,
-                        base: {
-                            gems: eventParsed.data.userPoints.gems,
-                            shells: eventParsed.data.userPoints.shells,
-                            hammers: eventParsed.data.userPoints.hammers,
-                        },
+                        base: eventParsed.data.userPoints,
                     });
                 }
                 break;

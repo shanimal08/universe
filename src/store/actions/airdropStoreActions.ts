@@ -179,7 +179,9 @@ export const setUserGems = (userGems: number) =>
             userPoints: userPointsFormatted,
         };
     });
-export const setUserPoints = (userPoints: UserPoints) => useAirdropStore.setState({ userPoints });
+export const setUserPoints = (userPoints: UserPoints) => {
+    useAirdropStore.setState({ userPoints });
+};
 
 export const fetchAllUserData = async () => {
     const fetchUserDetails = async () => {
@@ -208,6 +210,7 @@ export const fetchAllUserData = async () => {
             path: '/user/score',
             method: 'GET',
         });
+
         if (!data?.entry || !data?.entry?.gems) return;
         setUserPoints({
             base: {
