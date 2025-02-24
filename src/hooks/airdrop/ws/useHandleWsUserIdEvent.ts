@@ -7,11 +7,9 @@ export function useHandleWsUserIdEvent() {
         const eventParsed = JSON.parse(event) as WebsocketUserEvent;
         switch (eventParsed.name) {
             case WebsocketEventNames.REFERRAL_INSTALL_REWARD:
-                console.debug(eventParsed);
                 setFlareAnimationType('FriendAccepted');
                 break;
             case WebsocketEventNames.USER_SCORE_UPDATE:
-                console.debug(eventParsed);
                 if (eventParsed.data.userPoints) {
                     setUserPoints({
                         ...eventParsed.data.userPoints,
@@ -24,7 +22,6 @@ export function useHandleWsUserIdEvent() {
                 }
                 break;
             case WebsocketEventNames.COMPLETED_QUEST:
-                console.debug(eventParsed.data.questName, eventParsed.data.userPoints);
                 if (eventParsed.data.userPoints) {
                     setUserPoints({
                         ...eventParsed.data.userPoints,
