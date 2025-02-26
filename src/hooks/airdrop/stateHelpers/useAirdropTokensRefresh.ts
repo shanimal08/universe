@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { setAirdropTokens } from '@app/store';
 import { handleAirdropRequest } from '@app/hooks/airdrop/utils/useHandleRequest.ts';
 
-export async function fetchAirdropTokens(airdropTokens: AirdropTokens) {
+async function fetchAirdropTokens(airdropTokens: AirdropTokens) {
     try {
         const refreshedToken = await handleAirdropRequest<AirdropTokens>({
             path: '/auth/local/refresh',

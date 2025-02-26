@@ -55,7 +55,6 @@ export {
     changeMiningMode,
     getMaxAvailableThreads,
     pauseMining,
-    restartMining,
     setCustomLevelsDialogOpen,
     setExcludedGpuDevices,
     setMiningControlsEnabled,
