@@ -6,7 +6,6 @@ export {
     setBonusTiers,
     setFlareAnimationType,
     setUserDetails,
-    setUserGems,
     setUserPoints,
 } from './airdropStoreActions.ts';
 export {

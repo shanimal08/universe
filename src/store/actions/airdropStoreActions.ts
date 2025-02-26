@@ -169,16 +169,7 @@ export const setFlareAnimationType = (flareAnimationType?: AnimationType) =>
     useAirdropStore.setState({ flareAnimationType });
 
 export const setUserDetails = (userDetails?: UserDetails) => useAirdropStore.setState({ userDetails });
-export const setUserGems = (userGems: number) =>
-    useAirdropStore.setState((state) => {
-        const userPointsFormatted = {
-            ...state.userPoints,
-            base: { ...state.userPoints?.base, gems: userGems },
-        } as UserPoints;
-        return {
-            userPoints: userPointsFormatted,
-        };
-    });
+
 export const setUserPoints = (userPoints: UserPoints) => {
     useAirdropStore.setState({ userPoints });
 };
