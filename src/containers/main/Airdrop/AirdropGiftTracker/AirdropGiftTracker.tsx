@@ -7,10 +7,8 @@ import LoggedOut from './sections/LoggedOut/LoggedOut';
 import LoggedIn from './sections/LoggedIn/LoggedIn';
 import { Title, TitleWrapper, Wrapper } from './styles';
 import useAirdropWebsocket from '@app/hooks/airdrop/ws/useAirdropWebsocket.ts';
-import { useAirdropTokensRefresh } from '@app/hooks/airdrop/stateHelpers/useAirdropTokensRefresh.ts';
 
 export default function AirdropGiftTracker() {
-    useAirdropTokensRefresh();
     useAirdropWebsocket();
 
     const { t } = useTranslation(['airdrop'], { useSuspense: false });

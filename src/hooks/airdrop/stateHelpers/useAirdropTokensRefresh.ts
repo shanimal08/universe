@@ -1,5 +1,4 @@
 import { AirdropTokens, useAirdropStore } from '@app/store/useAirdropStore';
-import { useEffect } from 'react';
 import { setAirdropTokens } from '@app/store';
 import { handleAirdropRequest } from '@app/hooks/airdrop/utils/useHandleRequest.ts';
 
@@ -32,7 +31,6 @@ export async function handleRefreshAirdropTokens() {
     // 5 hours from now
     const expirationLimit = new Date(new Date().getTime() + 1000 * 60 * 60 * 5);
     const tokenExpirationTime = airdropTokens?.expiresAt && new Date(airdropTokens?.expiresAt * 1000);
-
     const tokenHasExpired = tokenExpirationTime && tokenExpirationTime < expirationLimit;
     if (airdropTokens && tokenHasExpired) {
         try {
@@ -43,14 +41,4 @@ export async function handleRefreshAirdropTokens() {
     }
 
     await setAirdropTokens(tokens);
-}
-
-export function useAirdropTokensRefresh() {
-    useEffect(() => {
-        const REFRESH_INTERVAL = 1000 * 60 * 60; // an hour
-        const interval = setInterval(() => handleRefreshAirdropTokens(), REFRESH_INTERVAL);
-        return () => {
-            clearInterval(interval);
-        };
-    }, []);
 }
