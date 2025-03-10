@@ -20,7 +20,7 @@ export async function handleAirdropRequest<T>({ body, method, path, onError, hea
         await handleRefreshAirdropTokens();
     }
 
-    if (!headers && (!baseUrl || !airdropToken)) return;
+    if (!headers && !headers && (!baseUrl || !airdropToken)) return;
 
     const fullUrl = `${baseUrl}${path}`;
     try {
