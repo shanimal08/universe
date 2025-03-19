@@ -7,7 +7,7 @@ import { TabsWrapper, Wrapper, NavButton, BottomNavWrapper, TabNavigation, NavLa
 import { Button } from '@app/components/elements/buttons/Button.tsx';
 
 export function Tabs({ tabItems }: TabsProps) {
-    const { t } = useTranslation();
+    const { t } = useTranslation('wallet');
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
     const showMainWalletNav = currentIndex !== 0;

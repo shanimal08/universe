@@ -37,7 +37,7 @@ const HistoryList = () => {
                 scrollableTarget="list"
             >
                 <ListItemWrapper>
-                    {transactions.map((tx, index) => (
+                    {transactions.slice(0, 5).map((tx, index) => (
                         <HistoryListItem key={tx.tx_id} item={tx} index={index} />
                     ))}
                 </ListItemWrapper>

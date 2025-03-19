@@ -11,6 +11,8 @@ export enum TransactionStatus {
     CoinbaseUnconfirmed = 12,
     /// This is Coinbase transaction that is detected from chain
     CoinbaseConfirmed = 13,
+    /// This is Coinbase transaction that is not currently detected as mined
+    CoinbaseNotInBlockChain = 14,
 }
 
 export enum TransactionDirection {

@@ -10,7 +10,13 @@ interface GetTitleArgs {
 }
 
 export function getItemType(item: TransactionInfo): TransationType {
-    const mined = [S.MinedConfirmed, S.MinedConfirmed, S.CoinbaseConfirmed, S.CoinbaseUnconfirmed];
+    const mined = [
+        S.MinedConfirmed,
+        S.MinedConfirmed,
+        S.CoinbaseConfirmed,
+        S.CoinbaseUnconfirmed,
+        S.CoinbaseNotInBlockChain,
+    ];
     const oneSided = [S.OneSidedConfirmed, S.OneSidedUnconfirmed];
 
     const isMined = item.direction === D.Inbound && mined.includes(item.status) && !oneSided.includes(item.status);
