@@ -14,13 +14,13 @@ export const Wrapper = styled.div<{ $isVisualMode?: boolean }>`
 
 export const Grid = styled.div`
     position: relative;
-    display: grid;
-    place-items: center;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 10px;
     width: 100%;
     height: 100%;
+    min-height: 970px;
 `;
 
 export const Row = styled.div<{ $placement: 'top' | 'middle' | 'bottom' }>`
@@ -29,7 +29,7 @@ export const Row = styled.div<{ $placement: 'top' | 'middle' | 'bottom' }>`
     position: absolute;
     justify-content: center;
     align-items: center;
-
+    gap: 10px;
     svg {
         display: flex;
         height: 100%;

@@ -11,6 +11,8 @@ export default function Background() {
                 <Row $placement="top">
                     <HexagonSVG />
                     <HexagonSVG />
+                    <HexagonSVG />
+                    <HexagonSVG />
                 </Row>
                 <Row $placement="middle">
                     <HexagonSVG />
@@ -21,8 +23,12 @@ export default function Background() {
                             <DotLottieReact src={winning} autoplay loop />
                         </LottieWrapper>
                     </CenterHex>
+                    <HexagonSVG />
+                    <HexagonSVG />
                 </Row>
                 <Row $placement="bottom">
+                    <HexagonSVG />
+                    <HexagonSVG />
                     <HexagonSVG />
                     <HexagonSVG />
                 </Row>
