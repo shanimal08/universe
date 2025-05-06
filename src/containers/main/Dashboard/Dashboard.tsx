@@ -3,6 +3,7 @@ import MiningView from './MiningView/MiningView';
 import DisconnectWrapper from '../Reconnect/DisconnectWrapper.tsx';
 import { DashboardContentContainer } from './styles';
 import { useAirdropStore, useUIStore } from '@app/store';
+import Background from '@app/containers/main/Dashboard/MiningView/components/background/Background.tsx';
 
 export default function Dashboard() {
     const connectionStatus = useUIStore((s) => s.connectionStatus);
@@ -11,6 +12,7 @@ export default function Dashboard() {
 
     return (
         <DashboardContentContainer>
+            <Background />
             {connectionStatus !== 'connected' && !orphanChainUiDisabled ? <DisconnectWrapper /> : null}
             <MiningView />
         </DashboardContentContainer>
