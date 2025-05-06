@@ -1,5 +1,8 @@
-import { Grid, Row, Wrapper } from './styles.ts';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { HexagonSVG } from '@app/assets/icons/hexagon.tsx';
+import { CenterHex, Grid, LottieWrapper, Row, Wrapper } from './styles.ts';
+
+import winning from './winning.json?url';
 
 export default function Background() {
     return (
@@ -13,6 +16,11 @@ export default function Background() {
                     <HexagonSVG />
                     <HexagonSVG />
                     <HexagonSVG />
+                    <CenterHex>
+                        <LottieWrapper>
+                            <DotLottieReact src={winning} autoplay loop />
+                        </LottieWrapper>
+                    </CenterHex>
                 </Row>
                 <Row $placement="bottom">
                     <HexagonSVG />

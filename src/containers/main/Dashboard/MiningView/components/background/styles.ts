@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { convertHexToRGBA } from '@app/utils';
 
 export const Wrapper = styled.div<{ $isVisualMode?: boolean }>`
     width: 100%;
@@ -13,28 +14,25 @@ export const Wrapper = styled.div<{ $isVisualMode?: boolean }>`
 
 export const Grid = styled.div`
     position: relative;
-    flex-direction: column;
-    justify-content: stretch;
-    display: flex;
+    display: grid;
+    place-items: center;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 10px;
     width: 100%;
     height: 100%;
 `;
 
 export const Row = styled.div<{ $placement: 'top' | 'middle' | 'bottom' }>`
     display: flex;
-    color: #dfdfdf;
+    color: ${({ theme }) => convertHexToRGBA(theme.palette.contrast, 0.1)};
     position: absolute;
     justify-content: center;
     align-items: center;
-    height: 33%;
-    width: 100%;
-    gap: 40px;
 
     svg {
         display: flex;
-        max-height: 100%;
-        border: 1px solid rgba(255, 128, 46, 0.7);
-        max-width: 100%;
+        height: 100%;
     }
 
     ${({ $placement }) => {
@@ -43,12 +41,10 @@ export const Row = styled.div<{ $placement: 'top' | 'middle' | 'bottom' }>`
                 return css`
                     top: 33%;
                     transform: translateY(-83%);
-                    border: 1px solid green;
                 `;
             case 'bottom':
                 return css`
                     bottom: 33%;
-                    border: 1px solid blue;
                     transform: translateY(83%);
                 `;
             case 'middle':
@@ -56,8 +52,19 @@ export const Row = styled.div<{ $placement: 'top' | 'middle' | 'bottom' }>`
                 return css`
                     top: 50%;
                     transform: translateY(-50%);
-                    border: 1px solid deeppink;
+                    opacity: 1;
                 `;
         }
     }}
+`;
+
+export const CenterHex = styled.div`
+    position: absolute;
+    display: flex;
+    padding: 10px;
+    max-width: 100%;
+`;
+
+export const LottieWrapper = styled.div`
+    display: flex;
 `;
