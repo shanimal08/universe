@@ -49,6 +49,7 @@ export default defineConfig(({ command }) => {
     return {
         ...baseOptions,
         plugins,
+        envPrefix: ['VITE_', 'TAURI_ENV_*'],
         build: {
             sourcemap: true,
         },
