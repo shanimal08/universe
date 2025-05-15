@@ -48,6 +48,7 @@ export const SubHeading = styled(Typography).attrs({ variant: 'p' })`
 export const HeaderGraphic = styled.div`
     width: min(220px, 24vh);
     user-select: none;
+    pointer-events: none;
     max-width: 100%;
 
     video {
