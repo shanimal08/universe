@@ -50,6 +50,7 @@ export const HeaderGraphic = styled.div`
     user-select: none;
     pointer-events: none;
     max-width: 100%;
+    margin: 0 0 10px;
 
     video {
         width: 169px;

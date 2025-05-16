@@ -11,12 +11,13 @@ export default function MainView() {
     const isSettingUp = useSetupStore((s) => !s.appUnlocked);
 
     return (
-        <DashboardContainer $disableBackground={isSettingUp}>
-            {!visualMode && !isSettingUp && <Background />}
+        <DashboardContainer $disableBackground={true}>
+            {/*{!visualMode && !isSettingUp && <Background />}*/}
             <Banner />
             <DashboardContent>
                 <SidebarNavigation />
-                {isSettingUp ? <Sync /> : <Dashboard />}
+                <Sync />
+                {/*{isSettingUp ? <Sync /> : <Dashboard />}*/}
             </DashboardContent>
         </DashboardContainer>
     );

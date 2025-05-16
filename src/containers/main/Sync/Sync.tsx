@@ -18,6 +18,7 @@ import {
 } from './sync.styles.ts';
 
 import dark from '/assets/video/coinLoader.webm';
+import Loader from '@app/containers/main/Sync/components/Loader.tsx';
 
 export default function Sync() {
     const { t } = useTranslation('setup-view');
@@ -38,18 +39,7 @@ export default function Sync() {
             <Content>
                 <HeaderContent>
                     <HeaderGraphic>
-                        <video
-                            key={theme}
-                            playsInline
-                            autoPlay
-                            loop
-                            muted
-                            controls={false}
-                            disablePictureInPicture
-                            disableRemotePlayback
-                        >
-                            {src}
-                        </video>
+                        <Loader text={'UNIVERSE UNIVERSE UNIVERSE '} />
                     </HeaderGraphic>
                     <Heading>{t('sync.header')}</Heading>
                     <SubHeading>{t('sync.subheader')}</SubHeading>
