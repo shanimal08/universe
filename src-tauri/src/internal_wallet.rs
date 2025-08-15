@@ -162,8 +162,9 @@ impl InternalWallet {
         app_handle: &AppHandle,
         wallet_config: &ConfigWalletContent,
     ) -> Result<bool, anyhow::Error> {
-        if *wallet_config.version() < WALLET_VERSION {
-            log::info!(target: LOG_TARGET, "Wallet config version is outdated, migration needed");
+        let wallet_config_version = *wallet_config.version();
+        if wallet_config_version < WALLET_VERSION {
+            log::info!(target: LOG_TARGET, "Wallet config version is outdated, migration needed (v{wallet_config_version} => v{WALLET_VERSION})");
             return Ok(false);
         }
         // Latest version confirmed
