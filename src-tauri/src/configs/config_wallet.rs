@@ -89,6 +89,7 @@ pub struct ConfigWalletContent {
     #[getset(get = "pub", set = "pub")]
     selected_external_tari_address: Option<TariAddress>,
     #[getset(get = "pub", set = "pub")]
+    #[serde(rename = "TariWalletDetails::tari_address")]
     tari_wallet_details: Option<TariWalletDetails>,
     #[getset(get = "pub", set = "pub")]
     pin_locker_state: PinLockerState,
@@ -178,12 +179,14 @@ pub struct ConfigWallet {
 
 impl ConfigWallet {
     pub async fn initialize(app_handle: AppHandle) {
+        log::info!("WEN initialize");
         let mut config = Self::current().write().await;
         config.load_app_handle(app_handle.clone()).await;
         drop(config);
     }
 
     pub async fn migrate() -> Result<(), anyhow::Error> {
+        log::info!("WEN migrate");
         let config = ConfigWallet::content().await;
         let current_version = *config.version();
 
@@ -213,10 +216,6 @@ impl ConfigWallet {
 impl ConfigImpl for ConfigWallet {
     type Config = ConfigWalletContent;
 
-    fn current() -> &'static RwLock<Self> {
-        &INSTANCE
-    }
-
     fn new() -> Self {
         Self {
             content: ConfigWallet::_load_or_create(),
@@ -224,29 +223,12 @@ impl ConfigImpl for ConfigWallet {
         }
     }
 
-    fn _load_or_create() -> Self::Config {
-        match Self::_load_config() {
-            Ok(config_content) => {
-                log::info!(target: LOG_TARGET, "[{}] [load_config] loaded config content", Self::_get_name());
-                config_content
-            }
-            Err(_) => {
-                log::debug!(target: LOG_TARGET, "[{}] [load_config] creating new config content", Self::_get_name());
-                let config_content = Self::Config::default();
-                let _unused = Self::_save_config(config_content.clone()).inspect_err(|error| {
-                    log::warn!(target: LOG_TARGET, "[{}] [save_config] error: {:?}", Self::_get_name(), error);
-                });
-                config_content
-            }
-        }
+    fn current() -> &'static RwLock<Self> {
+        &INSTANCE
     }
 
     async fn _get_app_handle(&self) -> Option<AppHandle> {
         self.app_handle.read().await.clone()
-    }
-
-    async fn load_app_handle(&mut self, app_handle: AppHandle) {
-        *self.app_handle.write().await = Some(app_handle);
     }
 
     fn _get_name() -> String {
@@ -259,5 +241,28 @@ impl ConfigImpl for ConfigWallet {
 
     fn _get_content_mut(&mut self) -> &mut Self::Config {
         &mut self.content
+    }
+
+    fn _load_or_create() -> Self::Config {
+        log::info!("WEN _load_or_create");
+        match Self::_load_config() {
+            Ok(config_content) => {
+                log::info!(target: LOG_TARGET, "[{}] [load_config] loaded config content", Self::_get_name());
+                config_content
+            }
+            Err(error) => {
+                log::error!(target: LOG_TARGET, "[{}] [load_config] errir {error:?}", Self::_get_name());
+                log::debug!(target: LOG_TARGET, "[{}] [load_config] creating new config content", Self::_get_name());
+                let config_content = Self::Config::default();
+                let _unused = Self::_save_config(config_content.clone()).inspect_err(|error| {
+                    log::warn!(target: LOG_TARGET, "[{}] [save_config] error: {:?}", Self::_get_name(), error);
+                });
+                config_content
+            }
+        }
+    }
+
+    async fn load_app_handle(&mut self, app_handle: AppHandle) {
+        *self.app_handle.write().await = Some(app_handle);
     }
 }
