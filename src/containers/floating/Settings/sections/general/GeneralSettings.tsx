@@ -12,10 +12,12 @@ import VisualMode from '@app/containers/main/Dashboard/components/VisualMode.tsx
 
 import AirdropNotificationsSettings from './AirdropNotificationSettings.tsx';
 import { TaskTrayModeSettings } from './TaskTrayModeSettings.tsx';
+import DirectorySettings from '@app/containers/floating/Settings/sections/general/DirectorySettings.tsx';
 
 export const GeneralSettings = () => {
     return (
         <>
+            <DirectorySettings />
             <StartApplicationOnBootSettings />
             <AutoUpdate />
             <PreReleaseSettings />

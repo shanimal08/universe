@@ -19,6 +19,7 @@
         "process:default",
         "clipboard-manager:allow-write-text",
         "clipboard-manager:allow-read-text",
+        "fs:allow-home-read-recursive",
         {
             "identifier": "http:default",
             "allow": [
