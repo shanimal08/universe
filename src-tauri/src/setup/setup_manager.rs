@@ -291,15 +291,13 @@ impl SetupManager {
                 let message = event_cloned.payload();
                 if let Ok(message) = serde_json::from_str::<WebsocketMessage>(message)
                     .inspect_err(|e| error!("websocket malformatted: {e}"))
-                {
-                    if websocket_tx_clone
+                    && websocket_tx_clone
                         .send(message.clone())
                         .await
                         .inspect_err(|e| error!("too many messages in websocket send queue {e}"))
                         .is_ok()
-                    {
-                        log::trace!("websocket message sent {message:?}");
-                    }
+                {
+                    log::trace!("websocket message sent {message:?}");
                 }
             });
         });

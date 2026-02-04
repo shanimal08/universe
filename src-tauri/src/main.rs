@@ -407,53 +407,51 @@ fn main() {
             app.manage(app_state_clone);
             match app.cli().matches() {
                 Ok(matches) => {
-                    if let Some(backup_path) = matches.args.get("import-backup") {
-                        if let Some(backup_path) = backup_path.value.as_str() {
-                            info!(
+                    if let Some(backup_path) = matches.args.get("import-backup") &&  let Some(backup_path) = backup_path.value.as_str() {
+                        info!(
                                 target: LOG_TARGET_APP_LOGIC,
                                 "Trying to copy backup to existing db: {backup_path:?}"
                             );
-                            let backup_path = Path::new(backup_path);
-                            if backup_path.exists() {
-                                let existing_db = app
-                                    .path()
-                                    .app_local_data_dir()
-                                    .map_err(Box::new)?
-                                    .join("node")
-                                    .join(
-                                        Network::get_current_or_user_setting_or_default()
-                                            .to_string(),
-                                    )
-                                    .join("data")
-                                    .join("base_node")
-                                    .join("db");
+                        let backup_path = Path::new(backup_path);
+                        if backup_path.exists() {
+                            let existing_db = app
+                                .path()
+                                .app_local_data_dir()
+                                .map_err(Box::new)?
+                                .join("node")
+                                .join(
+                                    Network::get_current_or_user_setting_or_default()
+                                        .to_string(),
+                                )
+                                .join("data")
+                                .join("base_node")
+                                .join("db");
 
-                                info!(target: LOG_TARGET_APP_LOGIC, "Existing db path: {existing_db:?}");
-                                let _unused = fs::remove_dir_all(&existing_db).inspect_err(|e| {
-                                    warn!(
+                            info!(target: LOG_TARGET_APP_LOGIC, "Existing db path: {existing_db:?}");
+                            let _unused = fs::remove_dir_all(&existing_db).inspect_err(|e| {
+                                warn!(
                                         target: LOG_TARGET_APP_LOGIC,
                                         "Could not remove existing db when importing backup: {e:?}"
                                     )
-                                });
-                                let _unused = fs::create_dir_all(&existing_db).inspect_err(|e| {
-                                    error!(
+                            });
+                            let _unused = fs::create_dir_all(&existing_db).inspect_err(|e| {
+                                error!(
                                         target: LOG_TARGET_APP_LOGIC,
                                         "Could not create existing db when importing backup: {e:?}"
                                     )
-                                });
-                                let _unused = fs::copy(backup_path, existing_db.join("data.mdb"))
-                                    .inspect_err(|e| {
-                                        error!(
+                            });
+                            let _unused = fs::copy(backup_path, existing_db.join("data.mdb"))
+                                .inspect_err(|e| {
+                                    error!(
                                             target: LOG_TARGET_APP_LOGIC,
                                             "Could not copy backup to existing db: {e:?}"
                                         )
-                                    });
-                            } else {
-                                warn!(
+                                });
+                        } else {
+                            warn!(
                                     target: LOG_TARGET_APP_LOGIC,
                                     "Backup file does not exist: {backup_path:?}"
                                 );
-                            }
                         }
                     }
                 }
@@ -476,22 +474,17 @@ fn main() {
                 let wallet_peer_db = local_data_dir.join("wallet").join(network).join("peer_db");
 
                 // They may not exist. This could be first run.
-                if node_peer_db.exists() {
-                    if let Err(e) = remove_dir_all(node_peer_db) {
-                        warn!(
+                if node_peer_db.exists() && let Err(e) = remove_dir_all(node_peer_db) {
+                    warn!(
                             target: LOG_TARGET_APP_LOGIC,
                             "Could not clear peer data folder: {e}"
                         );
-                    }
                 }
-
-                if wallet_peer_db.exists() {
-                    if let Err(e) = remove_dir_all(wallet_peer_db) {
-                        warn!(
+                if wallet_peer_db.exists() && let Err(e) = remove_dir_all(wallet_peer_db) {
+                    warn!(
                             target: LOG_TARGET_APP_LOGIC,
                             "Could not clear peer data folder: {e}"
                         );
-                    }
                 }
 
                 remove_file(tcp_tor_toggled_file).map_err(|e| {
@@ -648,11 +641,11 @@ fn main() {
                     target: LOG_TARGET_APP_LOGIC,
                     "App shutdown request [ExitRequested] caught with code: {code:#?}"
                 );
-                if let Some(exit_code) = code {
-                    if exit_code == RESTART_EXIT_CODE {
-                        // RunEvent does not hold the exit code so we store it separately
-                        is_restart_requested.store(true, Ordering::SeqCst);
-                    }
+                if let Some(exit_code) = code
+                    && exit_code == RESTART_EXIT_CODE
+                {
+                    // RunEvent does not hold the exit code so we store it separately
+                    is_restart_requested.store(true, Ordering::SeqCst);
                 }
 
                 info!(target: LOG_TARGET_APP_LOGIC, "All processes stopped");

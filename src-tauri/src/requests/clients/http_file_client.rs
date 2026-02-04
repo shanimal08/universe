@@ -205,26 +205,20 @@ impl HttpFileClient {
     pub async fn handle_resume_flow(&self) -> Result<(), anyhow::Error> {
         let head_response = HttpClient::default().send_head_request(&self.url).await?;
         let expected_size = get_content_length_from_head_response(&head_response);
-
         let destination = self.get_destination();
         let destination_file = destination.join(&self.file_name);
-
-        info!(target: LOG_TARGET_APP_LOGIC, "Destination directory: {}", destination.display());
-        info!(target: LOG_TARGET_APP_LOGIC, "Destination file: {}", destination_file.display());
-
+        info!(target: LOG_TARGET_APP_LOGIC, "Destination directory: {}, Destination file: {}", destination.display(),destination_file.display());
         if !destination.exists() {
             create_dir_all(destination)
                 .await
                 .map_err(|e| anyhow::anyhow!("Failed to create directory: {}", e))?;
         }
-
         if !destination_file.exists() {
             info!(target: LOG_TARGET_APP_LOGIC, "File does not exist, creating new file at {}", destination_file.display());
             File::create(&destination_file)
                 .await
                 .map_err(|e| anyhow::anyhow!("Failed to create file: {}", e))?;
         }
-
         let file_size = get_content_size_from_file(
             &File::options().append(true).open(&destination_file).await?,
         )
@@ -253,23 +247,18 @@ impl HttpFileClient {
 
         loop {
             file_download_attempt_count += 1;
-
             let file_size = get_content_size_from_file(&file).await?;
-
-            info!(target: LOG_TARGET_APP_LOGIC, "Expected file size: {expected_size}");
-            info!(target: LOG_TARGET_APP_LOGIC, "Current file size: {file_size}");
+            info!(target: LOG_TARGET_APP_LOGIC, "Expected file size: {expected_size} | Current file size: {file_size}");
 
             // Check if file is already complete
             if file_size.eq(&expected_size) {
                 info!(target: LOG_TARGET_APP_LOGIC, "File downloaded to {}, size: {}", destination_file.display(), file_size);
                 break;
             }
-
             if file_size.ne(&last_registered_file_size) {
                 last_registered_file_size = file_size;
                 file_download_attempt_count = 0;
             }
-
             if file_download_attempt_count > MAX_RETRIES {
                 warn!(target: LOG_TARGET_APP_LOGIC, "Max download attempts reached, giving up on downloading file.");
                 return Err(anyhow::anyhow!(
@@ -277,13 +266,11 @@ impl HttpFileClient {
                     destination_file.display()
                 ));
             }
-
             if file_size.eq(&0) {
                 info!(target: LOG_TARGET_APP_LOGIC, "File is empty, starting download from the beginning.");
             } else {
                 info!(target: LOG_TARGET_APP_LOGIC, "Resuming download from {} to {}, current size: {}", self.url, destination_file.display(), file_size);
             }
-
             match self.download_file(expected_size, &mut file, true).await {
                 Ok(_) => {
                     info!(target: LOG_TARGET_APP_LOGIC, "Downloaded successfully");
@@ -298,7 +285,6 @@ impl HttpFileClient {
                             self.url
                         ));
                     }
-
                     // If download timeouts so it returns 408 [ Request Timeout ] or 400 [ Bad Request ] we want to check if internet connection is available
                     // We include 400 because some servers return 400 instead of 408 as far as I understand
                     if e.to_string().contains("408") || e.to_string().contains("400") {
@@ -387,10 +373,10 @@ impl HttpFileClient {
         if expected_size > 0 {
             let progress_percentage =
                 (file.metadata().await?.len() as f64 / expected_size as f64) * 100.0;
-            if let Some(sender) = &self.config.progress_status_sender {
-                if let Err(e) = sender.send(progress_percentage.round()) {
-                    debug!(target: LOG_TARGET_APP_LOGIC, "Failed to send progress update: {e}");
-                }
+            if let Some(sender) = &self.config.progress_status_sender
+                && let Err(e) = sender.send(progress_percentage.round())
+            {
+                debug!(target: LOG_TARGET_APP_LOGIC, "Failed to send progress update: {e}");
             }
         }
         Ok(())

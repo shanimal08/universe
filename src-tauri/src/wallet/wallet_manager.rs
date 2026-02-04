@@ -505,39 +505,15 @@ impl WalletManager {
                     }
 
                     let wallet_status = wallet_state_receiver.borrow().clone();
-                    if let Some(wallet_state) = wallet_status {
-                        if let Some(balance) = wallet_state.balance {
+                    if let Some(wallet_state) = wallet_status
+                        && let Some(balance) = wallet_state.balance {
                             ConfigWallet::update_field(ConfigWalletContent::set_last_known_balance, balance.available_balance).await?;
                             EventsEmitter::emit_wallet_balance_update(balance).await;
                         }
-                    }
                 }
             }
         }
 
         Ok(())
-    }
-
-    #[allow(dead_code)]
-    pub async fn stop(&self) -> Result<i32, WalletManagerError> {
-        // Reset the initial scan flag
-        self.initial_scan_completed
-            .store(false, std::sync::atomic::Ordering::Relaxed);
-
-        let mut process_watcher = self.watcher.write().await;
-        process_watcher
-            .stop()
-            .await
-            .map_err(WalletManagerError::UnknownError)
-    }
-    #[allow(dead_code)]
-    pub async fn is_running(&self) -> bool {
-        let process_watcher = self.watcher.read().await;
-        process_watcher.is_running()
-    }
-    #[allow(dead_code)]
-    pub async fn is_pid_file_exists(&self, base_path: PathBuf) -> bool {
-        let lock = self.watcher.read().await;
-        lock.is_pid_file_exists(base_path)
     }
 }
