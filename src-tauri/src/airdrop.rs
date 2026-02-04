@@ -61,8 +61,7 @@ pub struct AirdropMinedBlockMessage {
 
 pub fn decode_jwt_claims(t: &str) -> Option<AirdropAccessToken> {
     let key = DecodingKey::from_secret(&[]);
-    let mut validation = Validation::new(Algorithm::HS256);
-    validation.insecure_disable_signature_validation();
+    let validation = Validation::new(Algorithm::HS256);
 
     match decode::<AirdropAccessToken>(t, &key, &validation) {
         Ok(data) => Some(data.claims),
@@ -76,9 +75,7 @@ pub fn decode_jwt_claims(t: &str) -> Option<AirdropAccessToken> {
 pub fn decode_jwt_claims_without_exp(t: &str) -> Option<AirdropAccessToken> {
     let key = DecodingKey::from_secret(&[]);
     let mut validation = Validation::new(Algorithm::HS256);
-    validation.insecure_disable_signature_validation();
     validation.validate_exp = false;
-
     match decode::<AirdropAccessToken>(t, &key, &validation) {
         Ok(data) => Some(data.claims),
         Err(e) => {
