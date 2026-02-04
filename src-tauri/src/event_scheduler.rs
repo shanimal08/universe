@@ -1037,31 +1037,30 @@ impl EventScheduler {
         events: &HashMap<String, ScheduledEvent>,
         event_id: String,
     ) -> Result<(), SchedulerError> {
-        if let Some(event) = events.get(&event_id) {
-            if event.state == SchedulerEventState::Active {
-                match event.event_type.clone() {
-                    SchedulerEventType::ResumeMining => {
-                        GpuManager::write().await.start_mining().await.unwrap_or_else(|e| {
-                    error!(target: LOG_TARGET_APP_LOGIC, "Failed to start GPU mining during PauseMining event {:?}: {}", event_id, e);
-                });
-                        CpuManager::write().await.start_mining().await.unwrap_or_else(|e| {
-                    error!(target: LOG_TARGET_APP_LOGIC, "Failed to start CPU mining during PauseMining event {:?}: {}", event_id, e);
-                });
-                    }
-                    SchedulerEventType::Mine { mining_mode } => {
-                        ConfigMining::update_field(ConfigMiningContent::set_selected_mining_mode, mining_mode.clone()).await.unwrap_or_else(|e| {
-                    error!(target: LOG_TARGET_APP_LOGIC, "Failed to set mining mode during Mine event {:?}: {}", event_id, e);
-                });
-                        // TODO: Replace with emiting specific value only
-                        EventsEmitter::emit_mining_config_loaded(&ConfigMining::content().await)
-                            .await;
-                        GpuManager::write().await.start_mining().await.unwrap_or_else(|e| {
-                    error!(target: LOG_TARGET_APP_LOGIC, "Failed to start GPU mining during Mine event {:?}: {}", event_id, e);
-                });
-                        CpuManager::write().await.start_mining().await.unwrap_or_else(|e| {
-                    error!(target: LOG_TARGET_APP_LOGIC, "Failed to start CPU mining during Mine event {:?}: {}", event_id, e);
-                });
-                    }
+        if let Some(event) = events.get(&event_id)
+            && event.state == SchedulerEventState::Active
+        {
+            match event.event_type.clone() {
+                SchedulerEventType::ResumeMining => {
+                    GpuManager::write().await.start_mining().await.unwrap_or_else(|e| {
+                        error!(target: LOG_TARGET_APP_LOGIC, "Failed to start GPU mining during PauseMining event {:?}: {}", event_id, e);
+                    });
+                    CpuManager::write().await.start_mining().await.unwrap_or_else(|e| {
+                        error!(target: LOG_TARGET_APP_LOGIC, "Failed to start CPU mining during PauseMining event {:?}: {}", event_id, e);
+                    });
+                }
+                SchedulerEventType::Mine { mining_mode } => {
+                    ConfigMining::update_field(ConfigMiningContent::set_selected_mining_mode, mining_mode.clone()).await.unwrap_or_else(|e| {
+                        error!(target: LOG_TARGET_APP_LOGIC, "Failed to set mining mode during Mine event {:?}: {}", event_id, e);
+                    });
+                    // TODO: Replace with emiting specific value only
+                    EventsEmitter::emit_mining_config_loaded(&ConfigMining::content().await).await;
+                    GpuManager::write().await.start_mining().await.unwrap_or_else(|e| {
+                        error!(target: LOG_TARGET_APP_LOGIC, "Failed to start GPU mining during Mine event {:?}: {}", event_id, e);
+                    });
+                    CpuManager::write().await.start_mining().await.unwrap_or_else(|e| {
+                        error!(target: LOG_TARGET_APP_LOGIC, "Failed to start CPU mining during Mine event {:?}: {}", event_id, e);
+                    });
                 }
             }
         }
@@ -1112,12 +1111,12 @@ impl EventScheduler {
         events: &mut HashMap<String, ScheduledEvent>,
         event_id: String,
     ) {
-        if let Some(event) = events.get(&event_id) {
-            if let SchedulerEventTiming::In(_) = event.timing {
-                info!(target: LOG_TARGET_APP_LOGIC, "Cleaning up schedule for event ID {:?}", event_id);
-                if let Err(e) = Self::handle_remove_event(events, event_id.clone()) {
-                    error!(target: LOG_TARGET_APP_LOGIC, "Failed to clean up scheduled event {:?}: {}", event_id, e);
-                }
+        if let Some(event) = events.get(&event_id)
+            && let SchedulerEventTiming::In(_) = event.timing
+        {
+            info!(target: LOG_TARGET_APP_LOGIC, "Cleaning up schedule for event ID {:?}", event_id);
+            if let Err(e) = Self::handle_remove_event(events, event_id.clone()) {
+                error!(target: LOG_TARGET_APP_LOGIC, "Failed to clean up scheduled event {:?}: {}", event_id, e);
             }
         }
     }

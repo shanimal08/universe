@@ -214,12 +214,10 @@ impl<TAdapter: ProcessAdapter> ProcessWatcher<TAdapter> {
     }
 
     pub async fn wait_ready(&self) -> Result<(), anyhow::Error> {
-        if let Some(ref task) = self.watcher_task {
-            if task.is_finished() {
-                //let exit_code = task.await??;
-
-                return Err(anyhow::anyhow!("Process watcher task has already finished"));
-            }
+        if let Some(ref task) = self.watcher_task
+            && task.is_finished()
+        {
+            return Err(anyhow::anyhow!("Process watcher task has already finished"));
         }
         Ok(())
     }

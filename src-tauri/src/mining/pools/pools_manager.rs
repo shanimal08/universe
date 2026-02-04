@@ -82,7 +82,7 @@ pub enum PoolManagerThreadCommands {
 /// Key features:
 /// - Periodic pool status updates with adaptive polling intervals
 /// - 60-second intervals when mining is active
-/// - 300-second intervals when mining is inactive  
+/// - 300-second intervals when mining is inactive
 /// - 1-hour grace period after mining stops before task shuts down
 /// - Automatic updates when pool or mining address configuration changes
 /// - Integration with TasksTrackers for proper shutdown handling
@@ -230,11 +230,12 @@ impl PoolManager {
 
     /// Send a stop command to the background task
     pub fn stop_background_task(&mut self) {
-        if let Some(sender) = &self.task_sender {
-            if let Err(e) = sender.send(PoolManagerThreadCommands::Stop) {
-                warn!(target: LOG_TARGET_APP_LOGIC, "Failed to send stop command to task: {e}");
-            }
+        if let Some(sender) = &self.task_sender
+            && let Err(e) = sender.send(PoolManagerThreadCommands::Stop)
+        {
+            warn!(target: LOG_TARGET_APP_LOGIC, "Failed to send stop command to task: {e}");
         }
+
         self.task_sender = None;
 
         if let Some(handle) = self.task_thread.take() {
@@ -350,11 +351,10 @@ impl PoolManager {
                 }
 
                 // Check if we should stop the task (1 hour after mining stopped)
-                if let Some(stop_at) = stop_task_at {
-                    if task_state.tracking_duration > stop_at {
-                        info!(target: LOG_TARGET_APP_LOGIC, "Stopping periodic pool status update task - 1 hour grace period expired");
-                        break;
-                    }
+                if let Some(stop_at) = stop_task_at
+                    && task_state.tracking_duration > stop_at {
+                    info!(target: LOG_TARGET_APP_LOGIC, "Stopping periodic pool status update task - 1 hour grace period expired");
+                    break;
                 }
             }
 
