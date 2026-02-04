@@ -24,7 +24,6 @@ use std::time::SystemTime;
 
 use getset::{Getters, Setters};
 use serde::{Deserialize, Serialize};
-use tiny_keccak::{Hasher, Keccak};
 
 use crate::configs::{
     config_wallet::{ConfigWallet, ConfigWalletContent},
@@ -33,7 +32,6 @@ use crate::configs::{
 
 pub struct PinLocker {
     state: PinLockerState,
-    // hash_state: Option<Vec<u8>>,
 }
 
 impl PinLocker {
@@ -121,18 +119,5 @@ impl PinLockerState {
     pub fn reset_pin_attempts(&mut self) {
         self.failed_pin_attempts = 0;
         self.last_failed_pin_attempt = None;
-    }
-
-    // Will be used later
-    #[allow(dead_code)]
-    pub fn create_hash(state: &PinLockerState) -> Vec<u8> {
-        // Serialize the struct to a byte vector
-        let serialized_data = bincode::serialize(state).expect("Failed to serialize data");
-        // Create a new Keccak instance
-        let mut keccak = Keccak::v256(); // For Keccak-256
-        let mut output = [0u8; 32];
-        keccak.update(&serialized_data);
-        keccak.finalize(&mut output);
-        output.to_vec() // Return the hash as a Vec<u8>
     }
 }
