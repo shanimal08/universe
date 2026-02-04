@@ -75,6 +75,7 @@ pub fn decode_jwt_claims(t: &str) -> Option<AirdropAccessToken> {
 pub fn decode_jwt_claims_without_exp(t: &str) -> Option<AirdropAccessToken> {
     let key = DecodingKey::from_secret(&[]);
     let mut validation = Validation::new(Algorithm::HS256);
+
     validation.validate_exp = false;
     match decode::<AirdropAccessToken>(t, &key, &validation) {
         Ok(data) => Some(data.claims),
