@@ -49,8 +49,8 @@ use websocket_manager::{WebsocketManager, WebsocketManagerStatusMessage, Websock
 
 use log4rs::config::RawConfig;
 use std::fs;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use tari_common::configuration::Network;
 use tari_transaction_components::consensus::ConsensusManager;
 use tauri::async_runtime::block_on;
@@ -65,8 +65,8 @@ use app_in_memory_config::EXCHANGE_ID;
 use telemetry_manager::TelemetryManager;
 
 use crate::feedback::Feedback;
-use crate::mining::cpu::manager::CpuManager;
 use crate::mining::cpu::CpuMinerStatus;
+use crate::mining::cpu::manager::CpuManager;
 use crate::mining::gpu::consts::GpuMinerStatus;
 use crate::mining::gpu::manager::GpuManager;
 use crate::mm_proxy_manager::MmProxyManager;
@@ -207,13 +207,11 @@ fn main() {
             attach_stacktrace: true,
             before_send: Some(Arc::new(|event| {
                 let is_in_ignored = event.logentry.as_ref().is_some_and(|entry| {
-                    IGNORED_SENTRY_ERRORS.iter().any(|ignored| entry.message.starts_with(ignored))
+                    IGNORED_SENTRY_ERRORS
+                        .iter()
+                        .any(|ignored| entry.message.starts_with(ignored))
                 });
-                if is_in_ignored {
-                    None
-                } else {
-                    Some(event)
-                }
+                if is_in_ignored { None } else { Some(event) }
             })),
             ..Default::default()
         },

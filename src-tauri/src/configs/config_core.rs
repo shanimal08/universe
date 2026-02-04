@@ -30,7 +30,7 @@ use tauri::AppHandle;
 use tokio::sync::RwLock;
 
 use crate::ab_test_selector::ABTestSelector;
-use crate::app_in_memory_config::{MinerType, DEFAULT_EXCHANGE_ID};
+use crate::app_in_memory_config::{DEFAULT_EXCHANGE_ID, MinerType};
 use crate::event_scheduler::ScheduledEventInfo;
 use crate::node::node_manager::NodeType;
 use crate::shutdown_manager::ShutdownMode;

@@ -1,5 +1,5 @@
-use crate::configs::config_mining::GpuDevicesSettings;
 use crate::LOG_TARGET_APP_LOGIC;
+use crate::configs::config_mining::GpuDevicesSettings;
 // Copyright 2024. The Tari Project
 //
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
@@ -27,15 +27,16 @@ use crate::events::{
     InitWalletScanningProgressPayload, UpdateAppModuleStatusPayload, WalletStatusUpdatePayload,
 };
 use crate::internal_wallet::TariAddressType;
+use crate::mining::MinerControlsState;
 use crate::mining::cpu::CpuMinerStatus;
 use crate::mining::gpu::consts::{GpuMiner, GpuMinerStatus, GpuMinerType};
 use crate::mining::gpu::miners::GpuCommonInformation;
 use crate::mining::pools::PoolStatus;
-use crate::mining::MinerControlsState;
 #[cfg(target_os = "windows")]
 use crate::system_dependencies::UniversalSystemDependency;
 use crate::wallet::wallet_types::{TransactionInfo, WalletBalance};
 use crate::{
+    BaseNodeStatus,
     configs::{
         config_core::ConfigCoreContent, config_mining::ConfigMiningContent,
         config_ui::ConfigUIContent, config_wallet::ConfigWalletContent,
@@ -48,7 +49,6 @@ use crate::{
     hardware::hardware_status_monitor::PublicDeviceGpuProperties,
     setup::setup_manager::SetupPhase,
     utils::app_flow_utils::FrontendReadyChannel,
-    BaseNodeStatus,
 };
 use log::error;
 use std::collections::HashMap;

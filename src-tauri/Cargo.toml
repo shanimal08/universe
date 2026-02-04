@@ -1,6 +1,6 @@
 [package]
 description = "Tari Universe"
-edition = "2021"
+edition = "2024"
 name = "tari-universe"
 repository = "https://github.com/tari-project/universe"
 version = "1.6.9"
